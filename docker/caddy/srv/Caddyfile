@@ -1,0 +1,5 @@
+
+localhost:443 {
+	tls self_signed
+ 	proxy / tomcat:8080
+}
