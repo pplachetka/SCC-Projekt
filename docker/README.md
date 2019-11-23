@@ -16,13 +16,13 @@ dann hinein navigieren
 
 herunterladen des Repos:
 
-`$ git clone https://gitlab.com/nm_hung93/speiseplan-scc-projekt.git`
+`$ git clone https://github.com/pplachetka/SCC-Projekt-Server`
 
 # Starten der services
 
 In das repo navigieren
 
-`$ cd speiseplan-scc-projekt`
+`$ cd SCC-Projekt-Server`
 
 Im Repo dann mit docker-compose die Container hochfahren
 
@@ -33,6 +33,12 @@ Im Repo dann mit docker-compose die Container hochfahren
 > -f gibt an das genaue file an
 
 Unter https://localhost kann nun auf Tomcat zugegriffen werden. Es wird am Anfang ncoh eine Warnmeldung erscheinen, welches besagt, dass dir URL ein ungültiges Zertifikat vorweist. Das liegt daran, dass dieses Zertifikat selbst erzeugt wurde und nicht von einer Top Level domain verifiziert wurde. Wenn ein domain Name vorliegt, kann dann umgeschalten werden und der webserver holt sich ein ordentliches Zertifikat.
+
+Folgende Services wurden angelegt:
+- reverse proxy webserver für automatisches https: hunnguye/caddy-alpine-x86_64:v1.0.4
+- Application server: tomcat:9.0.29-jdk8-openjdk
+- datenbank : mysql:8
+
 
 # Weitere Commandos
 
