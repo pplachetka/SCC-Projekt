@@ -32,8 +32,7 @@ Im Repo dann mit docker-compose die Container hochfahren
 >
 > -f gibt an das genaue file an
 
-Nun kann über localhost:80 nachgeprüft werden, ob der Service auf port 80 bereitsteht.
-Jetty müsste einen 404 Error ausgeben, weil wir noch keine Services deployt haben, aber der Server steht bereits
+Unter https://localhost kann nun auf Tomcat zugegriffen werden. Es wird am Anfang ncoh eine Warnmeldung erscheinen, welches besagt, dass dir URL ein ungültiges Zertifikat vorweist. Das liegt daran, dass dieses Zertifikat selbst erzeugt wurde und nicht von einer Top Level domain verifiziert wurde. Wenn ein domain Name vorliegt, kann dann umgeschalten werden und der webserver holt sich ein ordentliches Zertifikat.
 
 # Weitere Commandos
 
