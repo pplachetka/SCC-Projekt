@@ -1,11 +1,27 @@
 version: '3'
 services:
- jetty:
-  image: jetty:9.3-jre8-alpine
-  ports:
-   - "80:8080"
+ caddy:
+  image: hunnguye/caddy-alpine-x86_64:v1.0.4
+  volumes:
+   - "./caddy/srv:/srv"
   depends_on:
    - mysql
+  ports:
+   - "80:80"
+   - "443:443"
+  links:
+   - tomcat:tomcat
+  environment:
+   - CADDYPATH=/srv/caddy_home/
+  networks:
+   - scc
+
+ tomcat:
+  image: tomcat:9.0.29-jdk8-openjdk
+  ports:
+   - "8080:8080"
+  depends_on:
+    - mysql
   volumes:
    - ./webapps/:/var/lib/jetty/webapps
   links:
@@ -21,5 +37,6 @@ services:
    - ./config/mysql_credentials
   volumes:
    - "./db:/var/lib/mysql"
+
 networks:
  scc: 
