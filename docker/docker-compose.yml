@@ -23,7 +23,8 @@ services:
   depends_on:
     - mysql
   volumes:
-   - ./webapps/:/var/lib/jetty/webapps
+#   - ./tomcat:/usr/local/tomcat
+   - ./webapps:/usr/local/tomcat/webapps
   links:
    - mysql:mysql
   networks:
@@ -36,7 +37,7 @@ services:
   env_file:
    - ./config/mysql_credentials
   volumes:
-   - "./db:/var/lib/mysql"
-
+   - "./mysql/db:/var/lib/mysql"
+   - "./mysql/init:/docker-entrypoint-initdb.d
 networks:
  scc: 
