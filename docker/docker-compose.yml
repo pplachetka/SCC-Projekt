@@ -38,6 +38,6 @@ services:
    - ./config/mysql_credentials
   volumes:
    - "./mysql/db:/var/lib/mysql"
-   - "./mysql/init:/docker-entrypoint-initdb.d
+   - "./mysql/init:/docker-entrypoint-initdb.d"
 networks:
  scc: 

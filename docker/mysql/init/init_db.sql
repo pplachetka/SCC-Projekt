@@ -27,7 +27,7 @@ CREATE TABLE scc.USER_TOKEN (
     , Token VARCHAR (30)
     , ValidFrom timestamp
     , PRIMARY KEY (User_TokenID)
-)
+);
 
 -- ###########################################################################################
 -- ############################ TESTDATEN ####################################################
@@ -36,12 +36,7 @@ CREATE TABLE scc.USER_TOKEN (
 
 INSERT INTO USER (Name, FamilyName, Password, isAdmin)
 VALUES
-(
-'admin'
-, 'admin'
-, 'admin'
-, '1'
-);
+('admin', 'admin', 'admin', '1');
 
 INSERT INTO MENUITEM (Description, Costs)
 VALUES ('Huhn','3.5')
