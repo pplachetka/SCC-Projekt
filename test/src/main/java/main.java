@@ -28,7 +28,7 @@ public class main {
 
         //// USER ////////
         // GET
-        String json_user = new ObjectMapper().writeValueAsString(new MyDBHandler().getUserData("1", "admin"));
+        String json_user = new ObjectMapper().writeValueAsString(new MyDBHandler().getUserData("1"));
         System.out.println(json_user);
 
         /////// MENUITEMS /////////
