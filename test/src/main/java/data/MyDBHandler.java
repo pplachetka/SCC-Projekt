@@ -3,6 +3,8 @@ package main.java.data;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 
 public class MyDBHandler {
@@ -15,7 +17,8 @@ public class MyDBHandler {
     private PreparedStatement stmt;
     private ResultSet rs;
 
-    private String mysql_url="jdbc:mysql://localhost:3306/scc";
+    // private String mysql_url="jdbc:mysql://localhost:3306/scc";
+    private String mysql_url="jdbc:mysql://localhost/scc";
     private String mysql_user="UserX";
     private String mysql_pw="123456";
 
@@ -23,11 +26,29 @@ public class MyDBHandler {
     public MyDBHandler() {
 
         try {
-            // Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection(mysql_url,mysql_user,mysql_pw);
 
-        } catch(SQLException ex) {
+        } catch(SQLException | ClassNotFoundException ex) {
             System.out.println("Error: " + ex);
+        }
+    }
+
+    public void setToken(int UserId, String token){
+
+        Timestamp ValidFrom =  Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")));
+        try{
+            stmt = con.prepareStatement(
+                    "INSERT INTO "+Tbl_TOKEN + " (UserId, Token, ValidFrom)" +
+                            " VALUES ('"+UserId+"','"+token+"',?)"
+
+            );
+            stmt.setTimestamp(1,ValidFrom);
+            System.out.println(stmt);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -43,7 +64,9 @@ public class MyDBHandler {
                             " WHERE user.UserID = ? "
             );
             stmt.setInt(1,UserId);
+            System.out.println(stmt);
             rs = stmt.executeQuery();
+
             while(rs.next()){
                 if (rs.getString("Password").equals(password) || rs.getString("Token").equals(token)){
                     returnValue = true;
@@ -59,8 +82,10 @@ public class MyDBHandler {
         boolean returnValue = false;
         try {
             stmt = con.prepareStatement(
-                    "SELECT isAdmin FROM "+ Tbl_USER + " WHERE UserID = '"+UserId+"'"
+                    "SELECT isAdmin FROM "+ Tbl_USER + " WHERE UserID = ?"
             );
+            stmt.setInt(1,UserId);
+            System.out.println(stmt);
             rs = stmt.executeQuery();
             while(rs.next()){
                 if (rs.getInt("isAdmin") == 1 ){
@@ -73,23 +98,28 @@ public class MyDBHandler {
         return returnValue;
     }
 
-    public User getUserData(String UserId) {
+    public User getUserData(int UserId) {
 
         User user = new User();
         try {
             stmt = con.prepareStatement(
-                    "SELECT Name,FamilyName,isAdmin,password " +
-                            " FROM " + Tbl_USER +
-                            " WHERE UserId = '" + UserId + "'");
+                    "SELECT Name,FamilyName,isAdmin,password, Token " +
+                            " FROM " + Tbl_USER + " user" +
+                            " LEFT JOIN " + Tbl_TOKEN + " token" +
+                            " ON user.userid = token.userid" +
+                            " WHERE user.UserId = ?" +
+                            " ORDER BY token.ValidFrom DESC " +
+                            " LIMIT 1");
+            stmt.setInt(1,UserId);
             System.out.println(stmt.toString());
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                    user.setUserId(UserId);
-                    user.setName(rs.getString("Name"));
-                    user.setFamilyName(rs.getString("FamilyName"));
-                    user.setIsAdmin(rs.getInt("isAdmin"));
-
+                user.setUserId(UserId);
+                user.setName(rs.getString("Name"));
+                user.setFamilyName(rs.getString("FamilyName"));
+                user.setIsAdmin(rs.getInt("isAdmin"));
+                user.setToken(rs.getString("Token"));
             }
             con.close();
         } catch (SQLException e) {
@@ -111,11 +141,11 @@ public class MyDBHandler {
 
             while (rs.next()) {
                 MenuItem menuItem = new MenuItem();
-                    menuItem.setMenuItemID(rs.getString("MenuItemID"));
-                    menuItem.setDescription(rs.getString("Description"));
-                    menuItem.setCosts(rs.getBigDecimal("Costs"));
-               menuItemList.add(menuItem);
-                }
+                menuItem.setMenuItemID(rs.getString("MenuItemID"));
+                menuItem.setDescription(rs.getString("Description"));
+                menuItem.setCosts(rs.getBigDecimal("Costs"));
+                menuItemList.add(menuItem);
+            }
             con.close();
         } catch (SQLException e) {
             System.out.println(e);
@@ -125,7 +155,7 @@ public class MyDBHandler {
 
     }
 
-    public void setMenuItem(int menuItemID, String Description, BigDecimal Costs){
+    public void setMenuItem(int menuItemID,String Description, BigDecimal Costs){
 
         try {
             stmt = con.prepareStatement(

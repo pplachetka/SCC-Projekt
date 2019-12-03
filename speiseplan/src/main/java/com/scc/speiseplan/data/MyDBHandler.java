@@ -3,6 +3,8 @@ package com.scc.speiseplan.data;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 
 public class MyDBHandler {
@@ -31,6 +33,25 @@ public class MyDBHandler {
             System.out.println("Error: " + ex);
         }
     }
+
+    public void setToken(int UserId, String token){
+
+        Timestamp ValidFrom =  Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")));
+        try{
+            stmt = con.prepareStatement(
+                    "INSERT INTO "+Tbl_TOKEN + " (UserId, Token, ValidFrom)" +
+                            " VALUES ('"+UserId+"','"+token+"',?)"
+
+            );
+            stmt.setTimestamp(1,ValidFrom);
+            System.out.println(stmt);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public boolean isUser(int UserId, String password, String token){
         boolean returnValue = false;

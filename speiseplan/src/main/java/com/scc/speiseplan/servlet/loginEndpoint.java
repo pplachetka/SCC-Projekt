@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 
 
 @WebServlet(name = "loginEndpoint")
@@ -19,14 +21,16 @@ public class loginEndpoint extends HttpServlet {
 
         int userId = Integer.valueOf(request.getParameter("userid"));
         String password = request.getParameter("password");
-        String token = request.getParameter("token");
+        String token = "-1";//request.getParameter("token");
         String userData;
 
                 //  response.getWriter().println(userId+password+token)
         if (new MyDBHandler().isUser(userId,password,token)) {
                 //setToken
+                token = new BigInteger(130, new SecureRandom()).toString(32);
+                new MyDBHandler().setToken(userId,token);
                 userData = new ObjectMapper().writeValueAsString(new MyDBHandler().getUserData(userId));
-                
+
         }else{
                 userData = "{ \"UserId\":"+userId +", \"isAdmin\":\"-1\" }";
         }

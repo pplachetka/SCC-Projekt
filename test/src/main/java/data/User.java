@@ -2,16 +2,25 @@ package main.java.data;
 
 public class User {
 
-    private String UserId;
+    private int UserId;
     private String Name;
     private String FamilyName;
     private int isAdmin;
+    private String token;
 
-    public String getUserId() {
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public int getUserId() {
         return UserId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         UserId = userId;
     }
 

@@ -7,7 +7,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class main {
 
@@ -17,10 +20,20 @@ public class main {
 
         //// LOGIN bzw. vor jeder anderen Abfrage Authentifizierung
         // Authentification
-        System.out.println(new MyDBHandler().isUser(1,"admin","2"));
+        System.out.println("Test Authentification");
+        System.out.println(new MyDBHandler().isUser(1,"admin",""));
         // Authorization
+        System.out.println("Test Authorization");
         System.out.println(new MyDBHandler().isAdmin(1));
 
+        //LOGIN
+        System.out.println("Test set token");
+        new MyDBHandler().setToken(1, "s");
+
+        // get Userdata
+        System.out.println("Test get userdata");
+        String json_user = new ObjectMapper().writeValueAsString(new MyDBHandler().getUserData(1));
+        System.out.println(json_user);
 
         // Daten holen //
 
@@ -28,14 +41,12 @@ public class main {
 
         //// USER ////////
         // GET
-        String json_user = new ObjectMapper().writeValueAsString(new MyDBHandler().getUserData("1"));
-        System.out.println(json_user);
 
         /////// MENUITEMS /////////
         // MyDBHandler con_menu = new MyDBHandler();
         // GET
-        String json_menulist = new ObjectMapper().writeValueAsString(new MyDBHandler().getMenuItemList());
-        System.out.println(json_menulist);
+     //   String json_menulist = new ObjectMapper().writeValueAsString(new MyDBHandler().getMenuItemList());
+    //    System.out.println(json_menulist);
         // SET
 
     }
