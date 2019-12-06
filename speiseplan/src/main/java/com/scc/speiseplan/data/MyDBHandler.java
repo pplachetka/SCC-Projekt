@@ -46,7 +46,7 @@ public class MyDBHandler {
             stmt.setTimestamp(1,ValidFrom);
             System.out.println(stmt);
             stmt.executeUpdate();
-
+            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -58,7 +58,7 @@ public class MyDBHandler {
         //takes UserId and either token or password to authenticate to system
         try {
             stmt = con.prepareStatement(
-                    "SELECT user.Password, IFNULL(token.Token,-1) as Token, token.ValidFrom" +
+                    "SELECT user.Password, token.Token as Token, token.ValidFrom" +
                             " FROM "+ Tbl_USER +" user" +
                             " LEFT JOIN "+ Tbl_TOKEN +" token" +
                             " ON token.UserID = user.UserID" +
@@ -67,10 +67,13 @@ public class MyDBHandler {
             stmt.setInt(1,UserId);
             rs = stmt.executeQuery();
             while(rs.next()){
-                if (rs.getString("Password").equals(password) || rs.getString("Token").equals(token)){
+                if (rs.getString("password").equals(password) || rs.getString("Token").equals(token)){
+                    System.out.println(rs.getString("password"));
+                    System.out.println(rs.getString("Token"));
                     returnValue = true;
                 }
             }
+            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -89,6 +92,7 @@ public class MyDBHandler {
                     returnValue = true;
                 }
             }
+            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

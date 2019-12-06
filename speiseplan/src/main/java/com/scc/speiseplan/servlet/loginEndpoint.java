@@ -27,7 +27,7 @@ public class loginEndpoint extends HttpServlet {
                 //  response.getWriter().println(userId+password+token)
         if (new MyDBHandler().isUser(userId,password,token)) {
                 //setToken
-                token = new BigInteger(130, new SecureRandom()).toString(32);
+                token = new BigInteger(130, new SecureRandom()).toString(30);
                 new MyDBHandler().setToken(userId,token);
                 userData = new ObjectMapper().writeValueAsString(new MyDBHandler().getUserData(userId));
 
