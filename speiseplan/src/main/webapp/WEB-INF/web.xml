@@ -25,6 +25,18 @@
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
 
+<!--
+    wenn https aber prinzipiell dürfte das gar ncht benötigbar sein da das Zertifikat schon von caddy abgefangen wird
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>speiseplan</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+-->
 
     <!-- Jersey Servlet configurations -->
     <!--
@@ -44,3 +56,4 @@
 
     -->
 </web-app>
+

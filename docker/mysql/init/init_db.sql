@@ -36,7 +36,7 @@ CREATE TABLE scc.USER_TOKEN (
 
 INSERT INTO USER (Name, FamilyName, Password, isAdmin)
 VALUES
-('admin', 'admin', 'admin', '1');
+('admin', 'admin', 'admin', '1'),('user','username', 'userfamily','0');
 
 INSERT INTO MENUITEM (Description, Costs)
 VALUES ('Huhn','3.5')

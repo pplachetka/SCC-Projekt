@@ -1,17 +1,30 @@
 version: '3'
 services:
+ caddy:
+  image: hunnguye/caddy_v1.0.4_csr:latest #hunnguye/caddy-alpine-x86_64:v1.0.4
+  volumes:
+   - "./caddy/srv:/srv"
+  depends_on:
+   - mysql
+  ports:
+   - "80:80"
+   - "443:443"
+  links:
+   - tomcat:tomcat
+  environment:
+   - CADDYPATH=/srv/caddy_home/
+  networks:
+   - scc
+
  tomcat:
-  image: tomcat:9.0.5-jre8
+  image: tomcat:9.0.29-jdk8-openjdk
   ports:
    - "8080:8080"
-   - "8443:8443"
   depends_on:
     - mysql
   volumes:
 #   - ./tomcat:/usr/local/tomcat
    - ./webapps:/usr/local/tomcat/webapps
-   - ./certs:/usr/local/tomcat/ssl
-   - ./server.xml:/usr/local/tomcat/conf/server.xml
   links:
    - mysql:mysql
   networks:

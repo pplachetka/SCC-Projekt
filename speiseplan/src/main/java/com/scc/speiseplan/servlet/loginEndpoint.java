@@ -17,7 +17,7 @@ import java.security.SecureRandom;
 public class loginEndpoint extends HttpServlet {
 
 
-        public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         int userId = Integer.valueOf(request.getParameter("userid"));
         String password = request.getParameter("password");

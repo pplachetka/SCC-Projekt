@@ -10,14 +10,17 @@ RUN apk update && \
 RUN mkdir -p /srv/wordpress 
 
 # download from server and rename it
- RUN wget "https://github.com/caddyserver/caddy/releases/download/v1.0.4/caddy_v1.0.4_linux_amd64.tar.gz" -O caddy.tar.gz
+# RUN wget "https://github.com/caddyserver/caddy/releases/download/v1.0.4/caddy_v1.0.4_linux_amd64.tar.gz" -O caddy.tar.gz
+
+
+ADD caddy.tar.gz caddy.tar.gz
 
 # untar it and move it to our designated folder
-RUN tar -xvf caddy.tar.gz -C /tmp/ && mv /tmp/caddy /usr/local/bin/caddy && \
+RUN gunzip caddy.tar.gz && tar -xvf caddy.tar -C /tmp/ && mv /tmp/caddy /usr/local/bin/caddy && \
     chmod +x /usr/local/bin/caddy
 
 #rm caddy dl
-RUN rm caddy.tar.gz
+#RUN rm caddy.tar.gz
 
 EXPOSE 80 443
 
