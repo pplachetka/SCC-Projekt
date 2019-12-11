@@ -27,10 +27,14 @@ In das repo navigieren
 Im Repo dann mit docker-compose die Container hochfahren
 
 
-`$ docker-compose -f docker-compose.yml up -d`
+`$ docker-compose -f docker-compose.yml.caddy up -d`
 > -d gibt an, dass es im Hintergrund laufen soll
 >
 > -f gibt an das genaue file an
+
+man kann auch das -d weglassen, dann darf das Terminal nicht geschlossen werden, sonst werden alle Docker Prozesse geschlossen!
+Das Terminal läuft dann weite rund zeigt Log Einträge an
+Bspw kann man dann bei einem deploy sehen, dass Tomcat diesen deploy auch gemerkt und realisiert hat
 
 Unter https://localhost kann nun auf Tomcat zugegriffen werden. Es wird am Anfang ncoh eine Warnmeldung erscheinen, welches besagt, dass dir URL ein ungültiges Zertifikat vorweist. Das liegt daran, dass dieses Zertifikat selbst erzeugt wurde und nicht von einer Top Level domain verifiziert wurde. Wenn ein domain Name vorliegt, kann dann umgeschalten werden und der webserver holt sich ein ordentliches Zertifikat.
 
