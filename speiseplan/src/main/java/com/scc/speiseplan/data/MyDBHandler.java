@@ -34,6 +34,16 @@ public class MyDBHandler {
         }
     }
 
+    public MyDBHandler(String mysql_url){
+        this.mysql_url=mysql_url;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(mysql_url,mysql_user,mysql_pw);
+
+        } catch(SQLException | ClassNotFoundException ex) {
+            System.out.println("Error: " + ex);
+        }
+    }
     public void setToken(int UserId, String token){
 
         Timestamp ValidFrom =  Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")));
