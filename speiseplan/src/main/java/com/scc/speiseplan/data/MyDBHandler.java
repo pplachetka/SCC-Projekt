@@ -155,6 +155,7 @@ public class MyDBHandler {
                     menuItem.setDescription(rs.getString("Description"));
                     menuItem.setCosts(rs.getBigDecimal("Costs"));
                menuItemList.add(menuItem);
+               System.out.println(menuItem.toString());
                 }
             con.close();
         } catch (SQLException e) {
@@ -165,19 +166,53 @@ public class MyDBHandler {
 
     }
 
-    public void setMenuItem(int menuItemID,String Description, BigDecimal Costs){
+    public void updateMenuItem(int menuItemID,String Description, BigDecimal Costs){
 
         try {
             stmt = con.prepareStatement(
                     "UPDATE " + Tbl_MENUITEM +
                             " SET Description=?" +
                             " ,Costs=?" +
-                            "WHERE MenuItemID = ?" );
+                            " WHERE MenuItemID = ?" );
             stmt.setString(1,Description);
             stmt.setBigDecimal(2,Costs);
+            stmt.setInt(3,menuItemID);
+            System.out.println(stmt.toString());
+            stmt.executeUpdate();
+
+            con.close();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
+    public void insertMenuItem(String Description, BigDecimal Costs){
+
+        try {
+            stmt = con.prepareStatement(
+                    "INSERT INTO " + Tbl_MENUITEM + "(Description, Costs)" +
+                            " VALUES (?,?)");
+            stmt.setString(1,Description);
+            stmt.setBigDecimal(2,Costs);
+            System.out.println(stmt.toString());
+            stmt.executeUpdate();
+
+            con.close();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
+    public void deleteMenuItem(int menuItemID){
+
+        try {
+            stmt = con.prepareStatement(
+                    "DELETE FROM " + Tbl_MENUITEM +
+                            " WHERE menuItemID = ?" );
+
             stmt.setInt(1,menuItemID);
             System.out.println(stmt.toString());
-            stmt.executeQuery();
+            stmt.executeUpdate();
 
             con.close();
         } catch (SQLException e) {

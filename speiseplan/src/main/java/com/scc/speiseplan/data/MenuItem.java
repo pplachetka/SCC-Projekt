@@ -16,6 +16,8 @@ public class MenuItem {
         MenuItemID = menuItemID;
     }
 
+
+
     public String getDescription() {
         return Description;
     }
@@ -30,5 +32,14 @@ public class MenuItem {
 
     public void setCosts(BigDecimal costs) {
         Costs = costs;
+    }
+
+    @Override
+    public String toString() {
+        return "MenuItem{" +
+                "MenuItemID='" + MenuItemID + '\'' +
+                ", Description='" + Description + '\'' +
+                ", Costs=" + Costs +
+                '}';
     }
 }
