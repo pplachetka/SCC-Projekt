@@ -11,7 +11,8 @@ public class main {
     public static void main(String[] args) throws IOException {
 
         String mysql_url = "jdbc:mysql://localhost:3306/scc";
-    /**
+
+
         ////// LOGIN bzw. vor jeder anderen Abfrage Authentifizierung ////////
         // Authentification
         System.out.println("Test Authentification");
@@ -28,7 +29,7 @@ public class main {
         System.out.println("Test get userdata");
         String json_user = new ObjectMapper().writeValueAsString(new MyDBHandler(mysql_url).getUserData(1));
         System.out.println(json_user);
-    **/
+
 
 
         /////// MENUITEMS /////////

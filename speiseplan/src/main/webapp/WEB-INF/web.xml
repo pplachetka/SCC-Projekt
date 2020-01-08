@@ -5,6 +5,25 @@
 <web-app>
     <display-name>Archetype Created Web Application</display-name>
 
+
+    <servlet>
+        <servlet-name>Jersey Web Application</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>com.scc.speiseplan.servlet</param-value> <!-- https://stackoverflow.com/questions/18409088/severe-missing-dependency-for-field-private-org-glassfish-jersey-server-wadl -->
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Jersey Web Application</servlet-name>
+        <url-pattern>/endpoint/*</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+<!--
     <servlet>
         <servlet-name>abc</servlet-name>
         <servlet-class>com.scc.speiseplan.servlet.ServletAdd</servlet-class>
@@ -24,6 +43,7 @@
         <servlet-name>getUser</servlet-name>
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
+-->
 
 <!--
     wenn https aber prinzipiell dürfte das gar ncht benötigbar sein da das Zertifikat schon von caddy abgefangen wird
