@@ -19,6 +19,9 @@ services:
 
  mysql:
   image: mysql:8
+  # has to be closed lateron
+  ports:
+  - 3306:3306
   networks:
    - scc
   env_file:
