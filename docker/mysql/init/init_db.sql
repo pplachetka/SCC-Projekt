@@ -29,6 +29,14 @@ CREATE TABLE scc.USER_TOKEN (
     , PRIMARY KEY (User_TokenID)
 );
 
+CREATE TABLE scc.MENUITEMSCHEDULE(
+    menuScheduleID INT PRIMARY KEY AUTO_INCREMENT
+    , date date
+    , position tinyint
+    , menuItemID int NOT NULL
+    , UNIQUE (date, position)
+);
+
 -- ###########################################################################################
 -- ############################ TESTDATEN ####################################################
 -- ###########################################################################################
@@ -42,4 +50,3 @@ INSERT INTO MENUITEM (Description, Costs)
 VALUES ('Huhn','3.5')
 ,('Schwein','13.5')
 ,('Rind','3.54');
-

@@ -21,8 +21,9 @@ public class loginEndpoint {
         String userData;
 
         //  response.getWriter().println(userId+password+token)
-        
-        if (new MyDBHandler().isUser(userId,password,token)) {
+
+        // isUser ohne token abfrage da bei login eh noch kein token vorhanden
+        if (new MyDBHandler().login(userId,password)) {
             //setToken
             token = new BigInteger(130, new SecureRandom()).toString(30);
             new MyDBHandler().setToken(userId,token);

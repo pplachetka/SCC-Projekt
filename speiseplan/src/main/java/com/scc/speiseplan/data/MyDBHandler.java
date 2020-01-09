@@ -12,6 +12,7 @@ public class MyDBHandler {
     private static final String Tbl_USER = "scc.USER";
     private static final String Tbl_TOKEN = "scc.USER_TOKEN";
     private static final String Tbl_MENUITEM = "scc.MENUITEM";
+    private static final String Tbl_MENUITEMSCHEDULE = "scc.MENUITEMSCHEDULE";
 
     private Connection con;
     private PreparedStatement stmt;
@@ -63,23 +64,21 @@ public class MyDBHandler {
     }
 
 
-    public boolean isUser(int UserId, String password, String token){
+    public boolean login(int UserId, String password){
         boolean returnValue = false;
         //takes UserId and either token or password to authenticate to system
         try {
             stmt = con.prepareStatement(
-                    "SELECT user.Password, token.Token as Token, token.ValidFrom" +
+                    "SELECT user.Password" +
                             " FROM "+ Tbl_USER +" user" +
-                            " LEFT JOIN "+ Tbl_TOKEN +" token" +
-                            " ON token.UserID = user.UserID" +
                             " WHERE user.UserID = ? "
             );
             stmt.setInt(1,UserId);
+            System.out.println(stmt);
             rs = stmt.executeQuery();
-            while(rs.next()){
-                if (rs.getString("password").equals(password) || rs.getString("Token").equals(token)){
+            while(rs.next()) {
+                if (rs.getString("password").equals(password)) {
                     System.out.println(rs.getString("password"));
-                    System.out.println(rs.getString("Token"));
                     returnValue = true;
                 }
             }
@@ -88,6 +87,12 @@ public class MyDBHandler {
             e.printStackTrace();
         }
         return returnValue;
+    }
+
+    public boolean isUser(int token){
+        //token tabelle mit user tabelle joinen und schaun obs noch valid ist
+        // das gleiche mit admin
+        return false;
     }
 
     public boolean isAdmin(int UserId){
@@ -138,7 +143,7 @@ public class MyDBHandler {
         return user;
     }
 
-
+    // **************************** MenuItemList **************************************//
     public ArrayList<MenuItem> getMenuItemList(){
         ArrayList menuItemList = new ArrayList<MenuItem>();
 
@@ -221,6 +226,37 @@ public class MyDBHandler {
             System.out.println(e);
         }
     }
+
+    //************************************ MenuItemSchedule *********************************/
+
+    public void setMenuItemSchedule(int date, int position, int menuItemID) {
+        try {
+            // upsert in mysql
+            // https://chartio.com/resources/tutorials/how-to-insert-if-row-does-not-exist-upsert-in-mysql/
+            stmt = con.prepareStatement(
+                    "INSERT INTO " + Tbl_MENUITEMSCHEDULE + "(Date,Position,MenuItemID)" +
+                            " VALUES (?,?,?) "+
+                            " ON DUPLICATE KEY UPDATE "+
+                            " MenuItemID = ? " );
+            stmt.setInt(1,date);
+            stmt.setInt(2, position);
+            stmt.setInt(3, menuItemID);
+            stmt.setInt(4, menuItemID);
+
+            System.out.println(stmt.toString());
+            stmt.executeUpdate();
+
+            con.close();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+    }
+
+    public void getMenuItemSchedule(int startDate, int endDate){
+
+    }
+
 
 
 }

@@ -10,16 +10,25 @@
 
         <input type="submit">
     </form>
-
+<br>
 /speiseplan/endpoint/admin/getMenuItemList
     <form action="/speiseplan/endpoint/admin/getMenuItemList" method="post">
         <input type="submit">
     </form>
-
+<br>
 /speiseplan/endpoint/admin/setMenuItem
     <form action="/speiseplan/endpoint/admin/setMenuItem" method="post">
         Description  <input type="text" name="Description"><br>
         Costs  <input type="text" name="Costs"><br>
+        <input type="submit">
+    </form>
+<br>
+
+/speiseplan/endpoint/schedule/setMenuItemSchedule
+    <form action="/speiseplan/endpoint/schedule/setMenuItemSchedule" method="get">
+        date  <input type="text" name="date"><br>
+        position  <input type="text" name="position"><br>
+        menuItemID  <input type="text" name="menuItemID"><br>
         <input type="submit">
     </form>
 

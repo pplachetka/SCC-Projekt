@@ -3,8 +3,6 @@ package com.scc.speiseplan.data;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 
 public class main {
 
@@ -16,7 +14,7 @@ public class main {
         ////// LOGIN bzw. vor jeder anderen Abfrage Authentifizierung ////////
         // Authentification
         System.out.println("Test Authentification");
-        System.out.println(new MyDBHandler(mysql_url).isUser(1,"admin",""));
+        System.out.println(new MyDBHandler(mysql_url).login(1,"admin"));
         // Authorization
         System.out.println("Test Authorization");
         System.out.println(new MyDBHandler(mysql_url).isAdmin(1));
