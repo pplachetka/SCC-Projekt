@@ -2,6 +2,7 @@
 <html lang="en">
 
 <body>
+/speiseplan/endpoint/authentication/login
     <form action="/speiseplan/endpoint/authentication/login" method="get">
         UserId <input type="text" name="userId"><br>
         password <input type="text" name="password"><br>
@@ -10,12 +11,17 @@
         <input type="submit">
     </form>
 
-
-    <form action="/speiseplan/rest/add" method="get">
-        num1 <input type="text" name="num1"><br>
-        num2 <input type="text" name="num2"><br>
-
+/speiseplan/endpoint/admin/getMenuItemList
+    <form action="/speiseplan/endpoint/admin/getMenuItemList" method="post">
         <input type="submit">
     </form>
+
+/speiseplan/endpoint/admin/setMenuItem
+    <form action="/speiseplan/endpoint/admin/setMenuItem" method="post">
+        Description  <input type="text" name="Description"><br>
+        Costs  <input type="text" name="Costs"><br>
+        <input type="submit">
+    </form>
+
 </body>
 </html>

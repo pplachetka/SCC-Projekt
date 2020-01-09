@@ -192,6 +192,8 @@ public class MyDBHandler {
             stmt = con.prepareStatement(
                     "INSERT INTO " + Tbl_MENUITEM + "(Description, Costs)" +
                             " VALUES (?,?)");
+            System.out.println(Description);
+            System.out.println(Costs);
             stmt.setString(1,Description);
             stmt.setBigDecimal(2,Costs);
             System.out.println(stmt.toString());
