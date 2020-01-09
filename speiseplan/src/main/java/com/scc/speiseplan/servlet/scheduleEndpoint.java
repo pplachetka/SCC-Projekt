@@ -11,7 +11,7 @@ import java.sql.Date;
 @Path("/schedule")
 public class scheduleEndpoint {
 
-    //DONE
+
     @Path("/setMenuItemSchedule")
     @GET
     public Response setMenuItemSchedule (@QueryParam("date") int date,
@@ -19,6 +19,7 @@ public class scheduleEndpoint {
                                          @QueryParam("menuItemID") int menuItemID) {
 
         //ToDo:Tokencheck => admin?
+        //ToDo: iterieren, es sollte ne json per post kommen
         //dateformat: YYYYMMDD
         System.out.println("date: " +date + "| position: " + position + "| menuItemID: "+menuItemID);
         new MyDBHandler().setMenuItemSchedule(date, position, menuItemID);
