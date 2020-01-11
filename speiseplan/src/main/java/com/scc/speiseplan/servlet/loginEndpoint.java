@@ -13,9 +13,10 @@ import java.security.SecureRandom;
 public class loginEndpoint {
 
 
-    @GET @Path("/login")
+    @POST
+    @Path("/login")
     @Produces("application/json")
-    public Response login(@QueryParam("userId") int userId,@QueryParam("password") String password) throws IOException {
+    public Response login(@FormParam("userId") int userId,@FormParam("password") String password) throws IOException {
 
         String token = "-1";//request.getParameter("token");
         String userData;
@@ -38,7 +39,8 @@ public class loginEndpoint {
     }
 
 
-    @GET @Path("/isAdmin")
+    @GET
+    @Path("/isAdmin")
     @Produces("application/json")
     public Response isAdmin(){
     //ToDO
