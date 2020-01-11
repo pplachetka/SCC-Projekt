@@ -17,7 +17,6 @@ public class adminEndpoint {
     @Produces("application/json")
     public Response getMenuList() throws IOException {
 
-
         String menuItemList = new ObjectMapper().writeValueAsString(new MyDBHandler().getMenuItemList());
         return Response.status(200).entity(menuItemList).build();
 
@@ -26,8 +25,9 @@ public class adminEndpoint {
     //DONE
     @Path("/setMenuItem")
     @POST
-    @Produces("application/json")
-    public Response setMenuItem(@FormParam("Description") String Description, @FormParam("Costs") BigDecimal Costs) {
+    public Response setMenuItem(@FormParam("Description") String Description,
+                                @FormParam("Costs") BigDecimal Costs,
+                                @FormParam("token") int token) {
 
 
         new MyDBHandler().insertMenuItem( Description,  Costs);
