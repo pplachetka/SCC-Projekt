@@ -31,7 +31,14 @@ public class scheduleEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response setMenuItemSchedule (MenuItemScheduleReceiver menuItemScheduleReceiver) {
-        /* expecting: [{\"date\":\"20190101\",\"position\":\"1\",\"menuItemID\":\"2\"},{...}]";
+        /* expecting:
+                {   token:\"1\",
+                   menuItemSchedule:[{\"date\":\"20190101\",
+                                        \"position\":\"1\",
+                                        \"menuItemID\":\"2\"},
+                                     {...}
+                                     ]
+                }";
         * with dateformat: YYYYMMDD */
 
         int token = menuItemScheduleReceiver.getToken();
@@ -48,15 +55,10 @@ public class scheduleEndpoint {
                     );
         }
 
-
-
         //System.out.println(menuItemSchedule.get(0).toString());
 
 
         // müsste eig ein MenuItemSchedule
-
-
-
 
         //ToDo:Tokencheck => admin?
         //ToDo: exception handling, inserted?

@@ -30,6 +30,7 @@ public class adminEndpoint {
                                 @FormParam("token") int token) {
 
 
+
         new MyDBHandler().insertMenuItem( Description,  Costs);
 
         //ToDo:Tokencheck => admin?
