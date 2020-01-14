@@ -21,12 +21,8 @@ public class scheduleEndpoint {
     * https://mkyong.com/webservices/jax-rs/restful-java-client-with-jersey-client/
     * accepting a list of jsons
     * https://stackoverflow.com/questions/32510240/how-to-accept-json-array-input-in-jersey-rest-webservice */
-/*
-    @Path("/setMenuItemSchedule")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response setMenuItemSchedule (List<MenuItemSchedule> menuItemSchedule) {
-        */
+
+
     @Path("/setMenuItemSchedule")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -48,14 +44,7 @@ public class scheduleEndpoint {
                     );
         }
 
-
-
-        //System.out.println(menuItemSchedule.get(0).toString());
-
-
         // müsste eig ein MenuItemSchedule
-
-
 
 
         //ToDo:Tokencheck => admin?
