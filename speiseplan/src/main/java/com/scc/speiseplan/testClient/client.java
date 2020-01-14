@@ -13,7 +13,7 @@ public class client {
 
             /* Test on sending array of jsons*/
             WebResource webResource = client
-                    .resource("http://localhost:8080/speiseplan/endpoint/schedule/setMenuItemSchedule");
+                    .resource("https://speiseplan.ddns.net/speiseplan/endpoint/schedule/setMenuItemSchedule");
 
             String input = "{\"token\":\"1\", \"menuItemSchedule\":[{\"date\":\"20190101\",\"position\":\"1\",\"menuItemID\":\"2\"},{\"date\":\"20190101\",\"position\":\"1\",\"menuItemID\":\"1\"}] }";
 //[{"date":"20190101","position":"1","menuItemID":"essen A"},{"date":"20190101","position":"2","menuItemID":"essen B"},{"date":"20190101","position":"3","menuItemID":"essen C"},{"date":"20190102","position":"","menuItemID":""}]
