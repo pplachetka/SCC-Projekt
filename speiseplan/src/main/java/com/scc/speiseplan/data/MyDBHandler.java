@@ -6,6 +6,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MyDBHandler {
 
@@ -47,6 +48,7 @@ public class MyDBHandler {
     }
     public void setToken(int UserId, String token){
 
+        //ToDo: via upsert ohne User_TokenID identity, unique auf UserID und upsert token und ValidFrom
         Timestamp ValidFrom =  Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")));
         try{
             stmt = con.prepareStatement(
@@ -66,7 +68,6 @@ public class MyDBHandler {
 
     public boolean login(int UserId, String password){
         boolean returnValue = false;
-        //takes UserId and either token or password to authenticate to system
         try {
             stmt = con.prepareStatement(
                     "SELECT user.Password" +
@@ -89,28 +90,61 @@ public class MyDBHandler {
         return returnValue;
     }
 
-    public boolean isUser(int token){
-        //token tabelle mit user tabelle joinen und schaun obs noch valid ist
-        // das gleiche mit admin
-        return false;
-    }
-
-    public boolean isAdmin(int UserId){
+    public boolean isAdmin(String token){
         boolean returnValue = false;
         try {
             stmt = con.prepareStatement(
-                    "SELECT isAdmin FROM "+ Tbl_USER + " WHERE UserID = '"+UserId+"'"
+                    "SELECT token.ValidFrom, User.isAdmin FROM " + Tbl_TOKEN + " token "
+                            + " JOIN " + Tbl_USER  + " User "
+                            + " ON User.UserID = token.UserID "
+                            + " WHERE token.Token = ?"
             );
-            rs = stmt.executeQuery();
-            while(rs.next()){
-                if (rs.getInt("isAdmin") == 1 ){
-                    returnValue = true;
+            stmt.setString(1,token);
+            System.out.println(stmt);
+            rs=stmt.executeQuery();
+
+            while (rs.next()){
+                System.out.println("ValidFrom (DB): "+rs.getTimestamp("ValidFrom") +
+                        " cur timestamp: " +new Timestamp(new Date().getTime()) +
+                        " cur timestamp - 30 mins: " +new Timestamp(new Date().getTime()-1800000));
+                if (rs.getTimestamp("ValidFrom").after(new Timestamp(new Date().getTime()-1800000)) &&
+                (rs.getInt("isAdmin")==1)){
+                    returnValue=true;
                 }
             }
-            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        //token tabelle mit user tabelle joinen und schaun obs noch valid ist
+        // das gleiche mit admin
+        return returnValue;
+    }
+
+    // ob generell ein User vorherrscht, daher ob ein gültiger token vorhanden ist
+    public boolean isUser(String token){
+        boolean returnValue = false;
+        try {
+            stmt = con.prepareStatement(
+                    "SELECT token.ValidFrom FROM " + Tbl_TOKEN + " token "
+                            + " WHERE token.Token = ?"
+            );
+            stmt.setString(1,token);
+            System.out.println(stmt);
+            rs=stmt.executeQuery();
+
+            while (rs.next()){
+                System.out.println("ValidFrom (DB): "+rs.getTimestamp("ValidFrom") +
+                        " cur timestamp: " +new Timestamp(new Date().getTime()) +
+                        " cur timestamp - 30 mins: " +new Timestamp(new Date().getTime()-1800000));
+                if (rs.getTimestamp("ValidFrom").after(new Timestamp(new Date().getTime()-1800000))){
+                    returnValue=true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        //token tabelle mit user tabelle joinen und schaun obs noch valid ist
+        // das gleiche mit admin
         return returnValue;
     }
 

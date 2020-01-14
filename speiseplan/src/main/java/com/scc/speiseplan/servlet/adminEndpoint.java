@@ -15,8 +15,9 @@ public class adminEndpoint {
     @Path("/getMenuItemList")
     @POST
     @Produces("application/json")
-    public Response getMenuList() throws IOException {
+    public Response getMenuList(@FormParam("token") int menuItemId) throws IOException {
 
+        //ToDo:Tokencheck => admin?
         String menuItemList = new ObjectMapper().writeValueAsString(new MyDBHandler().getMenuItemList());
         return Response.status(200).entity(menuItemList).build();
 
@@ -25,8 +26,8 @@ public class adminEndpoint {
     //DONE
     @Path("/setMenuItem")
     @POST
-    public Response setMenuItem(@FormParam("Description") String Description,
-                                @FormParam("Costs") BigDecimal Costs,
+    public Response setMenuItem(@FormParam("description") String Description,
+                                @FormParam("costs") BigDecimal Costs,
                                 @FormParam("token") int token) {
 
 
