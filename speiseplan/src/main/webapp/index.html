@@ -4,7 +4,7 @@
 <body>
 /speiseplan/endpoint/authentication/login
     <form action="/speiseplan/endpoint/authentication/login" method="post">
-        UserId <input type="text" name="userId"><br>
+        UserId <input type="text" name="userID"><br>
         password <input type="text" name="password"><br>
         token <input type="text" name="token"><br>
 
@@ -18,8 +18,8 @@
 <br>
 /speiseplan/endpoint/admin/setMenuItem
     <form action="/speiseplan/endpoint/admin/setMenuItem" method="post">
-        Description  <input type="text" name="Description"><br>
-        Costs  <input type="text" name="Costs"><br>
+        Description  <input type="text" name="description"><br>
+        Costs  <input type="text" name="costs"><br>
         <input type="submit">
     </form>
 <br>
@@ -32,5 +32,10 @@
         <input type="submit">
     </form>
 
+/speiseplan/endpoint/admin/isAdmin
+    <form action="/speiseplan/endpoint/authentication/isAdmin" method="post">
+        token <input type="text" name="token"><br>
+        <input type="submit">
+    </form>
 </body>
 </html>
