@@ -10,13 +10,13 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 
 @Path("/authentication")
-public class loginEndpoint {
+public class authenticationEndpoint {
 
 
     @POST
     @Path("/login")
     @Produces("application/json")
-    public Response login(@FormParam("userId") int userId,@FormParam("password") String password) throws IOException {
+    public Response login(@FormParam("userID") int userId,@FormParam("password") String password) throws IOException {
 
         String token = "-1";//request.getParameter("token");
         String userData;
@@ -38,14 +38,17 @@ public class loginEndpoint {
 
     }
 
-
-    @GET
+    // obsolete?
+    @POST
     @Path("/isAdmin")
     @Produces("application/json")
-    public Response isAdmin(){
+    public Response isAdmin(@FormParam("token") String token){
     //ToDO
+
+        new MyDBHandler().isAdmin(token);
         String userData= "1";
 
         return Response.status(200).entity(userData).build();
     }
+
 }
