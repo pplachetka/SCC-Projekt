@@ -53,10 +53,17 @@ public class MyDBHandler {
         try{
             stmt = con.prepareStatement(
                     "INSERT INTO "+Tbl_TOKEN + " (UserId, Token, ValidFrom)" +
-                            " VALUES ('"+UserId+"','"+token+"',?)"
-
+                            " VALUES (?,?,?)" +
+                            " ON DUPLICATE KEY UPDATE " +
+                            " Token = ? " +
+                            " , ValidFrom = ? "
             );
-            stmt.setTimestamp(1,ValidFrom);
+            stmt.setInt(1, UserId);
+            stmt.setString(2,token);
+            stmt.setTimestamp(3,ValidFrom);
+            stmt.setString(4,token);
+            stmt.setTimestamp(5,ValidFrom);
+
             System.out.println(stmt);
             stmt.executeUpdate();
             con.close();
@@ -115,8 +122,7 @@ public class MyDBHandler {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        //token tabelle mit user tabelle joinen und schaun obs noch valid ist
-        // das gleiche mit admin
+
         return returnValue;
     }
 
@@ -143,11 +149,10 @@ public class MyDBHandler {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        //token tabelle mit user tabelle joinen und schaun obs noch valid ist
-        // das gleiche mit admin
         return returnValue;
     }
 
+    //ToDO token entfernen
     public User getUserData(int UserId) {
 
         User user = new User();
@@ -157,9 +162,10 @@ public class MyDBHandler {
                             " FROM " + Tbl_USER + " user" +
                             " LEFT JOIN " + Tbl_TOKEN + " token" +
                             " ON user.userid = token.userid" +
-                            " WHERE user.UserId = '" + UserId + "'" +
-                            " ORDER BY token.ValidFrom DESC " +
-                            " LIMIT 1");
+                            " WHERE user.UserId = ? " );
+                            //" ORDER BY token.ValidFrom DESC " +
+                            //" LIMIT 1");
+            stmt.setInt(1,UserId);
             System.out.println(stmt.toString());
             rs = stmt.executeQuery();
 
@@ -287,10 +293,35 @@ public class MyDBHandler {
 
     }
 
-    public void getMenuItemSchedule(int startDate, int endDate){
+    public ArrayList<MenuItemSchedule> getMenuItemSchedule(int startDate, int endDate){
+        ArrayList menuItemScheduleList = new ArrayList<MenuItemSchedule>();
+        //ToDO
+        try {
+            stmt = con.prepareStatement(
+                    "SELECT menuScheduleID, date, position, menuItemID FROM " + Tbl_MENUITEMSCHEDULE +
+                            " WHERE date between ? and ? " );
+            stmt.setInt(1,startDate);
+            stmt.setInt(2, endDate);
+
+            System.out.println(stmt.toString());
+            stmt.executeUpdate();
+
+            while (rs.next()) {
+                MenuItemSchedule menuItemSchedule = new MenuItemSchedule();
+                    menuItemSchedule.setMenuItemScheduleID(rs.getInt("menuScheduleID"));
+                    menuItemSchedule.setDate(rs.getInt("date"));
+                    menuItemSchedule.setPosition(rs.getInt("position"));
+                    menuItemSchedule.setMenuItemID(rs.getInt("menuItemID"));
+                menuItemScheduleList.add(menuItemSchedule);
+                System.out.println(menuItemSchedule.toString());
+            }
+            con.close();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+        return menuItemScheduleList;
 
     }
-
-
 
 }

@@ -1,6 +1,7 @@
 package com.scc.speiseplan.servlet;
 
 import com.scc.speiseplan.data.MenuItemSchedule;
+import com.scc.speiseplan.data.MenuItemScheduleCustomerOrderReceiver;
 import com.scc.speiseplan.data.MenuItemScheduleReceiver;
 import com.scc.speiseplan.data.MyDBHandler;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -54,14 +55,36 @@ public class scheduleEndpoint {
         return Response.status(200).build();
     }
 
-    //ToDO
+    //ToDO token
     @Path("/getMenuItemSchedule")
     @GET
     @Produces("application/json")
     public Response getMenuItemSchedule(@QueryParam("startDate") int startDate,
-                                        @QueryParam("endDate") int endDate){
+                                        @QueryParam("endDate") int endDate) throws IOException {
 
-        new MyDBHandler().getMenuItemSchedule(startDate,endDate);
+
+        String menuItemScheduleList = new ObjectMapper().writeValueAsString(new MyDBHandler().getMenuItemSchedule(startDate,endDate));
+        return Response.status(200).entity(menuItemScheduleList).build();
+
+    }
+
+    //ToDO
+    @Path("/getMenuItemScheduleCustomerOrder")
+    @GET
+    @Produces("application/json")
+    public Response getMenuItemScheduleCustomerOrder (@QueryParam("startDate") int startDate,
+                                                      @QueryParam("endDate") int endDate,
+                                                      @QueryParam("token") String token)  {
+
+        return Response.status(200).build();
+    }
+
+    //ToDO
+    @Path("/setMenuItemScheduleCustomerOrder")
+    @GET
+    @Produces("application/json")
+    public Response setMenuItemScheduleCustomerOrder (MenuItemScheduleCustomerOrderReceiver MenuItemScheduleCustomerOrderReceiver ){
+
 
         return Response.status(200).build();
     }
