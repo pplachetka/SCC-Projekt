@@ -1,9 +1,6 @@
 package com.scc.speiseplan.servlet;
 
-import com.scc.speiseplan.data.MenuItemSchedule;
-import com.scc.speiseplan.data.MenuItemScheduleCustomerOrderReceiver;
-import com.scc.speiseplan.data.MenuItemScheduleReceiver;
-import com.scc.speiseplan.data.MyDBHandler;
+import com.scc.speiseplan.data.*;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.ws.rs.*;
@@ -31,10 +28,13 @@ public class scheduleEndpoint {
         /* expecting: [{\"date\":\"20190101\",\"position\":\"1\",\"menuItemID\":\"2\"},{...}]";
         * with dateformat: YYYYMMDD */
 
-        int token = menuItemScheduleReceiver.getToken();
+        String token = menuItemScheduleReceiver.getToken();
+
+        if (! new MyDBHandler().isAdmin(token)){
+            return Response.status(401).build();
+        }
         ArrayList<MenuItemSchedule>  menuItemScheduleArray = menuItemScheduleReceiver.getMenuItemSchedule();
 
-        // ToDo: check for token
         System.out.println(token);
         for (MenuItemSchedule item : menuItemScheduleArray ) {
             new MyDBHandler()
@@ -44,18 +44,10 @@ public class scheduleEndpoint {
                             item.getPosition()
                     );
         }
-
-        // müsste eig ein MenuItemSchedule
-
-
-        //ToDo:Tokencheck => admin?
         //ToDo: exception handling, inserted?
-        //ToDO: typecast date as date?
-
         return Response.status(200).build();
     }
 
-    //ToDO token
     @Path("/getMenuItemSchedule")
     @GET
     @Produces("application/json")
@@ -75,6 +67,10 @@ public class scheduleEndpoint {
     public Response getMenuItemScheduleCustomerOrder (@QueryParam("startDate") int startDate,
                                                       @QueryParam("endDate") int endDate,
                                                       @QueryParam("token") String token)  {
+        if (! new MyDBHandler().isUser(token)){
+            return Response.status(401).build();
+        }
+
 
         return Response.status(200).build();
     }
@@ -85,6 +81,23 @@ public class scheduleEndpoint {
     @Produces("application/json")
     public Response setMenuItemScheduleCustomerOrder (MenuItemScheduleCustomerOrderReceiver MenuItemScheduleCustomerOrderReceiver ){
 
+        String token = MenuItemScheduleCustomerOrderReceiver.getToken();
+        if (! new MyDBHandler().isUser(token)){
+            return Response.status(401).build();
+        }
+
+        ArrayList<MenuItemSchedule>  menuItemScheduleArray = MenuItemScheduleCustomerOrderReceiver.getMenuItemSchedule();
+
+        User user = new MyDBHandler().getUserDataByToken(token);
+
+        for (MenuItemSchedule item : menuItemScheduleArray ) {
+            new MyDBHandler().setMenuItemScheduleCustomerOrder(
+                    user.getUserId()
+                    ,item.getDate()
+                    ,item.getMenuItemScheduleID()
+                    );
+
+        };
 
         return Response.status(200).build();
     }
