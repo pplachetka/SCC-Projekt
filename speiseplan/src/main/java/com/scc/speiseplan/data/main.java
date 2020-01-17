@@ -17,7 +17,7 @@ public class main {
         System.out.println(new MyDBHandler(mysql_url).login(1,"admin"));
         // Authorization
         System.out.println("Test Authorization");
-        System.out.println(new MyDBHandler(mysql_url).isAdmin(1));
+        System.out.println(new MyDBHandler(mysql_url).isAdmin("as"));
 
         //LOGIN
         System.out.println("Test set token");
