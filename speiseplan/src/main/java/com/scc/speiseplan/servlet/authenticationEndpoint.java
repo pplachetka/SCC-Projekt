@@ -32,7 +32,7 @@ public class authenticationEndpoint {
 
 
         }else{
-            userData = "{ \"UserId\":"+userId +", \"isAdmin\":\"-1\" }";
+            userData = "{ \"userID\":"+userId +", \"isAdmin\":\"-1\" }";
         }
         return Response.status(200).entity(userData).build();
 
