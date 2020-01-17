@@ -3,9 +3,18 @@ package com.scc.speiseplan.data;
 
 public class MenuItemSchedule {
 
+    private int menuItemScheduleID;
     private int date;
     private int position;
     private int menuItemID;
+
+    public int getMenuItemScheduleID() {
+        return menuItemScheduleID;
+    }
+
+    public void setMenuItemScheduleID(int menuItemScheduleID) {
+        this.menuItemScheduleID = menuItemScheduleID;
+    }
 
     public int getDate() {
         return date;
@@ -34,7 +43,8 @@ public class MenuItemSchedule {
     @Override
     public String toString() {
         return "MenuItemSchedule{" +
-                "date=" + date +
+                "menuItemScheduleID=" + menuItemScheduleID +
+                ", date=" + date +
                 ", position=" + position +
                 ", menuItemID=" + menuItemID +
                 '}';
