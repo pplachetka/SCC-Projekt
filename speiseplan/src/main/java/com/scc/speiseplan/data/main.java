@@ -25,7 +25,7 @@ public class main {
 
         // get Userdata
         System.out.println("Test get userdata");
-        String json_user = new ObjectMapper().writeValueAsString(new MyDBHandler(mysql_url).getUserData(1));
+        String json_user = new ObjectMapper().writeValueAsString(new MyDBHandler(mysql_url).getUserDataByToken(1));
         System.out.println(json_user);
 
 
