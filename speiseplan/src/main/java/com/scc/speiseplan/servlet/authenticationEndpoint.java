@@ -18,37 +18,21 @@ public class authenticationEndpoint {
     @Produces("application/json")
     public Response login(@FormParam("userID") int userId,@FormParam("password") String password) throws IOException {
 
-        String token = "-1";//request.getParameter("token");
+        String token = "-1";
         String userData;
 
-        //  response.getWriter().println(userId+password+token)
-
-        // isUser ohne token abfrage da bei login eh noch kein token vorhanden
         if (new MyDBHandler().login(userId,password)) {
             //setToken
             token = new BigInteger(130, new SecureRandom()).toString(30);
             new MyDBHandler().setToken(userId,token);
-            userData = new ObjectMapper().writeValueAsString(new MyDBHandler().getUserData(userId));
-
-
+            userData = new ObjectMapper().writeValueAsString(new MyDBHandler().getUserDataByToken(userId));
         }else{
+            // default response for failed authorization, could be done more ellegantly
+            // Todo response with 401 ?
             userData = "{ \"userID\":"+userId +", \"isAdmin\":\"-1\" }";
         }
         return Response.status(200).entity(userData).build();
 
-    }
-
-    // obsolete?
-    @POST
-    @Path("/isAdmin")
-    @Produces("application/json")
-    public Response isAdmin(@FormParam("token") String token){
-    //ToDO
-
-        new MyDBHandler().isAdmin(token);
-        String userData= "1";
-
-        return Response.status(200).entity(userData).build();
     }
 
 }

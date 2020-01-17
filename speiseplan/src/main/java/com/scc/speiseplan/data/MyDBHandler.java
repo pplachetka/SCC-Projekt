@@ -97,6 +97,9 @@ public class MyDBHandler {
         return returnValue;
     }
 
+    /*
+    * checks whether token belongs to an admin and returns true or false
+    */
     public boolean isAdmin(String token){
         boolean returnValue = false;
         try {
@@ -152,25 +155,25 @@ public class MyDBHandler {
         return returnValue;
     }
 
-    //ToDO token entfernen
-    public User getUserData(int UserId) {
+    //ToDO TEST
+    public User getUserDataByToken(String token) {
 
         User user = new User();
         try {
             stmt = con.prepareStatement(
-                    "SELECT Name,FamilyName,isAdmin,password, Token " +
+                    "SELECT UserID, Name,FamilyName,isAdmin,password, Token " +
                             " FROM " + Tbl_USER + " user" +
                             " LEFT JOIN " + Tbl_TOKEN + " token" +
                             " ON user.userid = token.userid" +
-                            " WHERE user.UserId = ? " );
+                            " WHERE token.Token = ? " );
                             //" ORDER BY token.ValidFrom DESC " +
                             //" LIMIT 1");
-            stmt.setInt(1,UserId);
+            stmt.setString(1,token);
             System.out.println(stmt.toString());
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                    user.setUserId(UserId);
+                    user.setUserId(rs.getInt("UserID"));
                     user.setName(rs.getString("Name"));
                     user.setFamilyName(rs.getString("FamilyName"));
                     user.setIsAdmin(rs.getInt("isAdmin"));
@@ -182,6 +185,8 @@ public class MyDBHandler {
         }
         return user;
     }
+
+
 
     // **************************** MenuItemList **************************************//
     public ArrayList<MenuItem> getMenuItemList(){
@@ -324,4 +329,9 @@ public class MyDBHandler {
 
     }
 
+    //************************************ Customer Order  *********************************/
+
+    public void setMenuItemScheduleCustomerOrder(int userId, int date, int menuItemScheduleID) {
+
+    }
 }
