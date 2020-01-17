@@ -30,13 +30,20 @@ CREATE TABLE scc.USER_TOKEN (
 );
 
 CREATE TABLE scc.MENUITEMSCHEDULE(
-    menuScheduleID INT PRIMARY KEY AUTO_INCREMENT
+    menuItemScheduleID INT PRIMARY KEY AUTO_INCREMENT
     , date date
     , position tinyint
     , menuItemID int NOT NULL
     , UNIQUE (date, position)
 );
 
+CREATE TABLE scc.CUSTOMER_ORDER(
+    Customer_OrderID INT PRIMARY KEY AUTO_INCREMENT
+    , UserID INT
+    , menuItemScheduleID INT
+    , date date
+    , UNIQUE (UserID, date)
+);
 -- ###########################################################################################
 -- ############################ TESTDATEN ####################################################
 -- ###########################################################################################
