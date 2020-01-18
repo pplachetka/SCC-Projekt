@@ -1,3 +1,19 @@
+# Changelog v0.2
+
+alle Features implementiert:
+
+setMenuItemSchedule
+getMenuItemSchedule
+getMenuItemScheduleCustomerOrder
+setMenuItemScheduleCustomerOrder
+getMenuItemList
+setMenuItem
+login
+
+url parameter jetzt camelCase
+alle notwendigen Endpunkte die Autorisierung benötigen werden mit Hilfe des Tokens geprüft
+Response status 401 = unauthorized access jetzt auch beim login endpunkt (d.h braucht eig nicht die json mit isAdmin = -1 lesen
+
 # How to open servlets in this mess
 
 Projekt in Ordner Speiseplan
