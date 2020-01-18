@@ -25,8 +25,15 @@ public class scheduleEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response setMenuItemSchedule (MenuItemScheduleReceiver menuItemScheduleReceiver) {
-        /* expecting: [{\"date\":\"20190101\",\"position\":\"1\",\"menuItemID\":\"2\"},{...}]";
-        * with dateformat: YYYYMMDD */
+        /** expected format:
+         * {\"token\":\"1\",
+         * \"menuItemSchedule\":[
+         *     {\"date\":\"20190101\",
+         *     \"position\":\"1\",
+         *     \"menuItemID\":\"2\"}
+         * ,{...}]
+         * }";
+         * with dateformat: YYYYMMDD **/
 
         String token = menuItemScheduleReceiver.getToken();
 
@@ -60,26 +67,39 @@ public class scheduleEndpoint {
 
     }
 
-    //ToDO
+    //ToDO:test
     @Path("/getMenuItemScheduleCustomerOrder")
     @GET
     @Produces("application/json")
     public Response getMenuItemScheduleCustomerOrder (@QueryParam("startDate") int startDate,
                                                       @QueryParam("endDate") int endDate,
-                                                      @QueryParam("token") String token)  {
+                                                      @QueryParam("token") String token) throws IOException {
         if (! new MyDBHandler().isUser(token)){
             return Response.status(401).build();
         }
+        int userId = new MyDBHandler().getUserDataByToken(token).getUserId();
 
+        String menuItemScheduleCustomerOrderList = new ObjectMapper().writeValueAsString( new MyDBHandler().getMenuItemScheduleCustomerOrder(startDate,  endDate,  userId));
 
-        return Response.status(200).build();
+        return Response.status(200).entity(menuItemScheduleCustomerOrderList).build();
     }
 
-    //ToDO
+
+    //ToDO:test
     @Path("/setMenuItemScheduleCustomerOrder")
     @GET
-    @Produces("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response setMenuItemScheduleCustomerOrder (MenuItemScheduleCustomerOrderReceiver MenuItemScheduleCustomerOrderReceiver ){
+
+        /** expected format:
+        * {"token": "token",
+        * "MenuItemSchedule": [{
+        *     "menuItemScheduleID": "1",
+        *     "date": "20190101"
+	    *     },
+	    *     {...} ]
+        * } */
+
 
         String token = MenuItemScheduleCustomerOrderReceiver.getToken();
         if (! new MyDBHandler().isUser(token)){
@@ -96,9 +116,9 @@ public class scheduleEndpoint {
                     ,item.getDate()
                     ,item.getMenuItemScheduleID()
                     );
-
         };
 
         return Response.status(200).build();
     }
+
 }

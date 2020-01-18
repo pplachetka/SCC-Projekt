@@ -3,6 +3,7 @@ package com.scc.speiseplan.data;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class MyDBHandler {
     private static final String Tbl_TOKEN = "scc.USER_TOKEN";
     private static final String Tbl_MENUITEM = "scc.MENUITEM";
     private static final String Tbl_MENUITEMSCHEDULE = "scc.MENUITEMSCHEDULE";
+    private static final String Tbl_CUSTOMERORDER = "scc.CUSTOMER_ORDER";
 
     private Connection con;
     private PreparedStatement stmt;
@@ -48,7 +50,7 @@ public class MyDBHandler {
     }
     public void setToken(int UserId, String token){
 
-        //ToDo: via upsert ohne User_TokenID identity, unique auf UserID und upsert token und ValidFrom
+
         Timestamp ValidFrom =  Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")));
         try{
             stmt = con.prepareStatement(
@@ -129,7 +131,9 @@ public class MyDBHandler {
         return returnValue;
     }
 
-    // ob generell ein User vorherrscht, daher ob ein gültiger token vorhanden ist
+    /**
+     * checks whether token belongs to an User and returns true or false
+     */
     public boolean isUser(String token){
         boolean returnValue = false;
         try {
@@ -161,13 +165,11 @@ public class MyDBHandler {
         User user = new User();
         try {
             stmt = con.prepareStatement(
-                    "SELECT UserID, Name,FamilyName,isAdmin,password, Token " +
+                    "SELECT user.UserID, Name,FamilyName,isAdmin,password, Token " +
                             " FROM " + Tbl_USER + " user" +
                             " LEFT JOIN " + Tbl_TOKEN + " token" +
                             " ON user.userid = token.userid" +
                             " WHERE token.Token = ? " );
-                            //" ORDER BY token.ValidFrom DESC " +
-                            //" LIMIT 1");
             stmt.setString(1,token);
             System.out.println(stmt.toString());
             rs = stmt.executeQuery();
@@ -300,7 +302,6 @@ public class MyDBHandler {
 
     public ArrayList<MenuItemSchedule> getMenuItemSchedule(int startDate, int endDate){
         ArrayList menuItemScheduleList = new ArrayList<MenuItemSchedule>();
-        //ToDO
         try {
             stmt = con.prepareStatement(
                     "SELECT menuScheduleID, date, position, menuItemID FROM " + Tbl_MENUITEMSCHEDULE +
@@ -309,12 +310,11 @@ public class MyDBHandler {
             stmt.setInt(2, endDate);
 
             System.out.println(stmt.toString());
-            stmt.executeUpdate();
-
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 MenuItemSchedule menuItemSchedule = new MenuItemSchedule();
                     menuItemSchedule.setMenuItemScheduleID(rs.getInt("menuScheduleID"));
-                    menuItemSchedule.setDate(rs.getInt("date"));
+                    menuItemSchedule.setDate((Integer.valueOf(new SimpleDateFormat("YYYYMMDD").format(rs.getDate("date"))))); //huhhh hacky
                     menuItemSchedule.setPosition(rs.getInt("position"));
                     menuItemSchedule.setMenuItemID(rs.getInt("menuItemID"));
                 menuItemScheduleList.add(menuItemSchedule);
@@ -332,6 +332,61 @@ public class MyDBHandler {
     //************************************ Customer Order  *********************************/
 
     public void setMenuItemScheduleCustomerOrder(int userId, int date, int menuItemScheduleID) {
+        try {
+            // upsert in mysql
+            // https://chartio.com/resources/tutorials/how-to-insert-if-row-does-not-exist-upsert-in-mysql/
+            stmt = con.prepareStatement(
+                    "INSERT INTO " + Tbl_CUSTOMERORDER + " (UserID,menuItemScheduleID,date) " +
+                            " VALUES (?,?,?) "+
+                            " ON DUPLICATE KEY UPDATE "+
+                            " menuItemScheduleID = ? " );
+            stmt.setInt(1,userId);
+            stmt.setInt(2, menuItemScheduleID);
+            stmt.setInt(3, date);
+            stmt.setInt(4, menuItemScheduleID);
+
+            System.out.println(stmt.toString());
+            stmt.executeUpdate();
+
+            con.close();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
 
     }
+
+    public ArrayList<MenuItemSchedule> getMenuItemScheduleCustomerOrder(int startDate, int endDate, int userId) {
+        ArrayList menuItemScheduleList = new ArrayList<MenuItemSchedule>();
+        try {
+            stmt = con.prepareStatement(
+                    "SELECT s.date, s.position, s.menuItemID " +
+                            " FROM " + Tbl_CUSTOMERORDER + " o " +
+                            " JOIN " + Tbl_MENUITEMSCHEDULE+ " s " +
+                            " ON o.menuItemScheduleID = s.menuItemScheduleID " +
+                            " WHERE 1 = 1" +
+                            " AND o.UserID = ?" +
+                            " AND o.date between ? and ? " );
+            stmt.setInt(1,userId);
+            stmt.setInt(2,startDate);
+            stmt.setInt(3, endDate);
+
+            System.out.println(stmt.toString());
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                MenuItemSchedule menuItemSchedule = new MenuItemSchedule();
+                menuItemSchedule.setDate((Integer.valueOf(new SimpleDateFormat("YYYYMMDD").format(rs.getDate("date"))))); //huhhh hacky
+                menuItemSchedule.setPosition(rs.getInt("position"));
+                menuItemSchedule.setMenuItemID(rs.getInt("menuItemID"));
+                menuItemScheduleList.add(menuItemSchedule);
+                System.out.println(menuItemSchedule.toString());
+            }
+            con.close();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+        return menuItemScheduleList;
+    }
+
+
 }
