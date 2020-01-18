@@ -1,8 +1,6 @@
 package com.scc.speiseplan.servlet;
 
-import com.scc.speiseplan.data.MenuItemSchedule;
-import com.scc.speiseplan.data.MenuItemScheduleReceiver;
-import com.scc.speiseplan.data.MyDBHandler;
+import com.scc.speiseplan.data.*;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.ws.rs.*;
@@ -21,30 +19,31 @@ public class scheduleEndpoint {
     * https://mkyong.com/webservices/jax-rs/restful-java-client-with-jersey-client/
     * accepting a list of jsons
     * https://stackoverflow.com/questions/32510240/how-to-accept-json-array-input-in-jersey-rest-webservice */
-/*
-    @Path("/setMenuItemSchedule")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response setMenuItemSchedule (List<MenuItemSchedule> menuItemSchedule) {
-        */
+
+
     @Path("/setMenuItemSchedule")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response setMenuItemSchedule (MenuItemScheduleReceiver menuItemScheduleReceiver) {
-        /* expecting:
-                {   token:\"1\",
-                   menuItemSchedule:[{\"date\":\"20190101\",
-                                        \"position\":\"1\",
-                                        \"menuItemID\":\"2\"},
-                                     {...}
-                                     ]
-                }";
-        * with dateformat: YYYYMMDD */
 
-        int token = menuItemScheduleReceiver.getToken();
+        /** expected format:
+         * {\"token\":\"1\",
+         * \"menuItemSchedule\":[
+         *     {\"date\":\"20190101\",
+         *     \"position\":\"1\",
+         *     \"menuItemID\":\"2\"}
+         * ,{...}]
+         * }";
+         * with dateformat: YYYYMMDD **/
+
+        String token = menuItemScheduleReceiver.getToken();
+
+        if (! new MyDBHandler().isAdmin(token)){
+            return Response.status(401).build();
+        }
+
         ArrayList<MenuItemSchedule>  menuItemScheduleArray = menuItemScheduleReceiver.getMenuItemSchedule();
 
-        // ToDo: check for token
         System.out.println(token);
         for (MenuItemSchedule item : menuItemScheduleArray ) {
             new MyDBHandler()
@@ -54,28 +53,78 @@ public class scheduleEndpoint {
                             item.getPosition()
                     );
         }
-
-        //System.out.println(menuItemSchedule.get(0).toString());
-
-
-        // müsste eig ein MenuItemSchedule
-
-        //ToDo:Tokencheck => admin?
         //ToDo: exception handling, inserted?
-        //ToDO: typecast date as date?
-
         return Response.status(200).build();
     }
 
-    //ToDO
     @Path("/getMenuItemSchedule")
     @GET
     @Produces("application/json")
     public Response getMenuItemSchedule(@QueryParam("startDate") int startDate,
-                                        @QueryParam("endDate") int endDate){
+                                        @QueryParam("endDate") int endDate) throws IOException {
 
-        new MyDBHandler().getMenuItemSchedule(startDate,endDate);
+
+        String menuItemScheduleList = new ObjectMapper().writeValueAsString(new MyDBHandler().getMenuItemSchedule(startDate,endDate));
+        return Response.status(200).entity(menuItemScheduleList).build();
+
+
+    }
+
+    //ToDO:test
+    @Path("/getMenuItemScheduleCustomerOrder")
+    @GET
+    @Produces("application/json")
+    public Response getMenuItemScheduleCustomerOrder (@QueryParam("startDate") int startDate,
+                                                      @QueryParam("endDate") int endDate,
+                                                      @QueryParam("token") String token) throws IOException {
+        if (! new MyDBHandler().isUser(token)){
+            return Response.status(401).build();
+        }
+        int userId = new MyDBHandler().getUserDataByToken(token).getUserId();
+
+        String menuItemScheduleCustomerOrderList = new ObjectMapper().writeValueAsString( new MyDBHandler().getMenuItemScheduleCustomerOrder(startDate,  endDate,  userId));
+
+
+        return Response.status(200).entity(menuItemScheduleCustomerOrderList).build();
+    }
+
+
+
+    //ToDO:test
+    @Path("/setMenuItemScheduleCustomerOrder")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response setMenuItemScheduleCustomerOrder (MenuItemScheduleCustomerOrderReceiver MenuItemScheduleCustomerOrderReceiver ){
+
+        /** expected format:
+        * {"token": "token",
+        * "MenuItemSchedule": [{
+        *     "menuItemScheduleID": "1",
+        *     "date": "20190101"
+	    *     },
+	    *     {...} ]
+        * } */
+
+
+        String token = MenuItemScheduleCustomerOrderReceiver.getToken();
+        if (! new MyDBHandler().isUser(token)){
+            return Response.status(401).build();
+        }
+
+
+        ArrayList<MenuItemSchedule>  menuItemScheduleArray = MenuItemScheduleCustomerOrderReceiver.getMenuItemSchedule();
+
+        User user = new MyDBHandler().getUserDataByToken(token);
+
+        for (MenuItemSchedule item : menuItemScheduleArray ) {
+            new MyDBHandler().setMenuItemScheduleCustomerOrder(
+                    user.getUserId()
+                    ,item.getDate()
+                    ,item.getMenuItemScheduleID()
+                    );
+        };
 
         return Response.status(200).build();
     }
+
 }

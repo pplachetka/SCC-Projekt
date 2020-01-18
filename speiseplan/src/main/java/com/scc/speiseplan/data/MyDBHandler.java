@@ -3,9 +3,11 @@ package com.scc.speiseplan.data;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MyDBHandler {
 
@@ -13,6 +15,7 @@ public class MyDBHandler {
     private static final String Tbl_TOKEN = "scc.USER_TOKEN";
     private static final String Tbl_MENUITEM = "scc.MENUITEM";
     private static final String Tbl_MENUITEMSCHEDULE = "scc.MENUITEMSCHEDULE";
+    private static final String Tbl_CUSTOMERORDER = "scc.CUSTOMER_ORDER";
 
     private Connection con;
     private PreparedStatement stmt;
@@ -47,14 +50,22 @@ public class MyDBHandler {
     }
     public void setToken(int UserId, String token){
 
+
         Timestamp ValidFrom =  Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")));
         try{
             stmt = con.prepareStatement(
                     "INSERT INTO "+Tbl_TOKEN + " (UserId, Token, ValidFrom)" +
-                            " VALUES ('"+UserId+"','"+token+"',?)"
-
+                            " VALUES (?,?,?)" +
+                            " ON DUPLICATE KEY UPDATE " +
+                            " Token = ? " +
+                            " , ValidFrom = ? "
             );
-            stmt.setTimestamp(1,ValidFrom);
+            stmt.setInt(1, UserId);
+            stmt.setString(2,token);
+            stmt.setTimestamp(3,ValidFrom);
+            stmt.setString(4,token);
+            stmt.setTimestamp(5,ValidFrom);
+
             System.out.println(stmt);
             stmt.executeUpdate();
             con.close();
@@ -66,7 +77,6 @@ public class MyDBHandler {
 
     public boolean login(int UserId, String password){
         boolean returnValue = false;
-        //takes UserId and either token or password to authenticate to system
         try {
             stmt = con.prepareStatement(
                     "SELECT user.Password" +
@@ -89,48 +99,83 @@ public class MyDBHandler {
         return returnValue;
     }
 
-    public boolean isUser(int token){
-        //token tabelle mit user tabelle joinen und schaun obs noch valid ist
-        // das gleiche mit admin
-        return false;
-    }
-
-    public boolean isAdmin(int UserId){
+    /*
+    * checks whether token belongs to an admin and returns true or false
+    */
+    public boolean isAdmin(String token){
         boolean returnValue = false;
         try {
             stmt = con.prepareStatement(
-                    "SELECT isAdmin FROM "+ Tbl_USER + " WHERE UserID = '"+UserId+"'"
+                    "SELECT token.ValidFrom, User.isAdmin FROM " + Tbl_TOKEN + " token "
+                            + " JOIN " + Tbl_USER  + " User "
+                            + " ON User.UserID = token.UserID "
+                            + " WHERE token.Token = ?"
             );
-            rs = stmt.executeQuery();
-            while(rs.next()){
-                if (rs.getInt("isAdmin") == 1 ){
-                    returnValue = true;
+            stmt.setString(1,token);
+            System.out.println(stmt);
+            rs=stmt.executeQuery();
+
+            while (rs.next()){
+                System.out.println("ValidFrom (DB): "+rs.getTimestamp("ValidFrom") +
+                        " cur timestamp: " +new Timestamp(new Date().getTime()) +
+                        " cur timestamp - 30 mins: " +new Timestamp(new Date().getTime()-1800000));
+                if (rs.getTimestamp("ValidFrom").after(new Timestamp(new Date().getTime()-1800000)) &&
+                (rs.getInt("isAdmin")==1)){
+                    returnValue=true;
                 }
             }
-            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return returnValue;
+    }
+
+    /**
+     * checks whether token belongs to an User and returns true or false
+     */
+    public boolean isUser(String token){
+        boolean returnValue = false;
+        try {
+            stmt = con.prepareStatement(
+                    "SELECT token.ValidFrom FROM " + Tbl_TOKEN + " token "
+                            + " WHERE token.Token = ?"
+            );
+            stmt.setString(1,token);
+            System.out.println(stmt);
+            rs=stmt.executeQuery();
+
+            while (rs.next()){
+                System.out.println("ValidFrom (DB): "+rs.getTimestamp("ValidFrom") +
+                        " cur timestamp: " +new Timestamp(new Date().getTime()) +
+                        " cur timestamp - 30 mins: " +new Timestamp(new Date().getTime()-1800000));
+                if (rs.getTimestamp("ValidFrom").after(new Timestamp(new Date().getTime()-1800000))){
+                    returnValue=true;
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return returnValue;
     }
 
-    public User getUserData(int UserId) {
+    //ToDO TEST
+    public User getUserDataByToken(String token) {
 
         User user = new User();
         try {
             stmt = con.prepareStatement(
-                    "SELECT Name,FamilyName,isAdmin,password, Token " +
+                    "SELECT user.UserID, Name,FamilyName,isAdmin,password, Token " +
                             " FROM " + Tbl_USER + " user" +
                             " LEFT JOIN " + Tbl_TOKEN + " token" +
                             " ON user.userid = token.userid" +
-                            " WHERE user.UserId = '" + UserId + "'" +
-                            " ORDER BY token.ValidFrom DESC " +
-                            " LIMIT 1");
+                            " WHERE token.Token = ? " );
+            stmt.setString(1,token);
             System.out.println(stmt.toString());
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                    user.setUserId(UserId);
+                    user.setUserId(rs.getInt("UserID"));
                     user.setName(rs.getString("Name"));
                     user.setFamilyName(rs.getString("FamilyName"));
                     user.setIsAdmin(rs.getInt("isAdmin"));
@@ -142,6 +187,8 @@ public class MyDBHandler {
         }
         return user;
     }
+
+
 
     // **************************** MenuItemList **************************************//
     public ArrayList<MenuItem> getMenuItemList(){
@@ -253,10 +300,93 @@ public class MyDBHandler {
 
     }
 
-    public void getMenuItemSchedule(int startDate, int endDate){
+    public ArrayList<MenuItemSchedule> getMenuItemSchedule(int startDate, int endDate){
+        ArrayList menuItemScheduleList = new ArrayList<MenuItemSchedule>();
+        try {
+            stmt = con.prepareStatement(
+                    "SELECT menuScheduleID, date, position, menuItemID FROM " + Tbl_MENUITEMSCHEDULE +
+                            " WHERE date between ? and ? " );
+            stmt.setInt(1,startDate);
+            stmt.setInt(2, endDate);
+
+            System.out.println(stmt.toString());
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                MenuItemSchedule menuItemSchedule = new MenuItemSchedule();
+                    menuItemSchedule.setMenuItemScheduleID(rs.getInt("menuScheduleID"));
+                    menuItemSchedule.setDate((Integer.valueOf(new SimpleDateFormat("YYYYMMDD").format(rs.getDate("date"))))); //huhhh hacky
+                    menuItemSchedule.setPosition(rs.getInt("position"));
+                    menuItemSchedule.setMenuItemID(rs.getInt("menuItemID"));
+                menuItemScheduleList.add(menuItemSchedule);
+                System.out.println(menuItemSchedule.toString());
+            }
+            con.close();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+        return menuItemScheduleList;
 
     }
 
+    //************************************ Customer Order  *********************************/
+
+    public void setMenuItemScheduleCustomerOrder(int userId, int date, int menuItemScheduleID) {
+        try {
+            // upsert in mysql
+            // https://chartio.com/resources/tutorials/how-to-insert-if-row-does-not-exist-upsert-in-mysql/
+            stmt = con.prepareStatement(
+                    "INSERT INTO " + Tbl_CUSTOMERORDER + " (UserID,menuItemScheduleID,date) " +
+                            " VALUES (?,?,?) "+
+                            " ON DUPLICATE KEY UPDATE "+
+                            " menuItemScheduleID = ? " );
+            stmt.setInt(1,userId);
+            stmt.setInt(2, menuItemScheduleID);
+            stmt.setInt(3, date);
+            stmt.setInt(4, menuItemScheduleID);
+
+            System.out.println(stmt.toString());
+            stmt.executeUpdate();
+
+            con.close();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+    }
+
+    public ArrayList<MenuItemSchedule> getMenuItemScheduleCustomerOrder(int startDate, int endDate, int userId) {
+        ArrayList menuItemScheduleList = new ArrayList<MenuItemSchedule>();
+        try {
+            stmt = con.prepareStatement(
+                    "SELECT s.date, s.position, s.menuItemID " +
+                            " FROM " + Tbl_CUSTOMERORDER + " o " +
+                            " JOIN " + Tbl_MENUITEMSCHEDULE+ " s " +
+                            " ON o.menuItemScheduleID = s.menuItemScheduleID " +
+                            " WHERE 1 = 1" +
+                            " AND o.UserID = ?" +
+                            " AND o.date between ? and ? " );
+            stmt.setInt(1,userId);
+            stmt.setInt(2,startDate);
+            stmt.setInt(3, endDate);
+
+            System.out.println(stmt.toString());
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                MenuItemSchedule menuItemSchedule = new MenuItemSchedule();
+                menuItemSchedule.setDate((Integer.valueOf(new SimpleDateFormat("YYYYMMDD").format(rs.getDate("date"))))); //huhhh hacky
+                menuItemSchedule.setPosition(rs.getInt("position"));
+                menuItemSchedule.setMenuItemID(rs.getInt("menuItemID"));
+                menuItemScheduleList.add(menuItemSchedule);
+                System.out.println(menuItemSchedule.toString());
+            }
+            con.close();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+        return menuItemScheduleList;
+    }
 
 
 }

@@ -15,8 +15,11 @@ public class adminEndpoint {
     @Path("/getMenuItemList")
     @POST
     @Produces("application/json")
-    public Response getMenuList() throws IOException {
+    public Response getMenuList(@FormParam("token") String token) throws IOException {
 
+        if (! new MyDBHandler().isAdmin(token)){
+            return Response.status(401).build();
+        }
         String menuItemList = new ObjectMapper().writeValueAsString(new MyDBHandler().getMenuItemList());
         return Response.status(200).entity(menuItemList).build();
 
@@ -25,17 +28,19 @@ public class adminEndpoint {
     //DONE
     @Path("/setMenuItem")
     @POST
-    public Response setMenuItem(@FormParam("Description") String Description,
-                                @FormParam("Costs") BigDecimal Costs,
-                                @FormParam("token") int token) {
+    public Response setMenuItem(@FormParam("description") String Description,
+                                @FormParam("costs") BigDecimal Costs,
+                                @FormParam("token") String token) {
 
+        if (! new MyDBHandler().isAdmin(token)){
+            return Response.status(401).build();
+        }
 
 
         new MyDBHandler().insertMenuItem( Description,  Costs);
 
-        //ToDo:Tokencheck => admin?
-        //ToDo: schauen ob das menuItem tatsächlich abgebildet ist,
-        //ToDo: exception handling typecast auf costs ansonsten status bad
+        //ToDo: schauen ob das menuItem tatsächlich abgebildet ist
+        // Exception handling unknown error?
         return Response.status(200).build();
     }
 
