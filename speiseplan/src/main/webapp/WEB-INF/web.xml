@@ -5,6 +5,8 @@
 <web-app>
     <display-name>Archetype Created Web Application</display-name>
 
+
+
     <!-- https://crunchify.com/how-to-build-restful-service-with-java-using-jax-rs-and-jersey/ -->
     <servlet>
         <servlet-name>Jersey Web Application</servlet-name>
@@ -12,6 +14,10 @@
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
             <param-value>com.scc.speiseplan.servlet</param-value> <!-- https://stackoverflow.com/questions/18409088/severe-missing-dependency-for-field-private-org-glassfish-jersey-server-wadl -->
+        </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+            <param-value>true</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>

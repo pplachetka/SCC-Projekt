@@ -25,6 +25,7 @@ public class scheduleEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response setMenuItemSchedule (MenuItemScheduleReceiver menuItemScheduleReceiver) {
+
         /** expected format:
          * {\"token\":\"1\",
          * \"menuItemSchedule\":[
@@ -40,6 +41,7 @@ public class scheduleEndpoint {
         if (! new MyDBHandler().isAdmin(token)){
             return Response.status(401).build();
         }
+
         ArrayList<MenuItemSchedule>  menuItemScheduleArray = menuItemScheduleReceiver.getMenuItemSchedule();
 
         System.out.println(token);
@@ -65,6 +67,7 @@ public class scheduleEndpoint {
         String menuItemScheduleList = new ObjectMapper().writeValueAsString(new MyDBHandler().getMenuItemSchedule(startDate,endDate));
         return Response.status(200).entity(menuItemScheduleList).build();
 
+
     }
 
     //ToDO:test
@@ -81,8 +84,10 @@ public class scheduleEndpoint {
 
         String menuItemScheduleCustomerOrderList = new ObjectMapper().writeValueAsString( new MyDBHandler().getMenuItemScheduleCustomerOrder(startDate,  endDate,  userId));
 
+
         return Response.status(200).entity(menuItemScheduleCustomerOrderList).build();
     }
+
 
 
     //ToDO:test
@@ -105,6 +110,7 @@ public class scheduleEndpoint {
         if (! new MyDBHandler().isUser(token)){
             return Response.status(401).build();
         }
+
 
         ArrayList<MenuItemSchedule>  menuItemScheduleArray = MenuItemScheduleCustomerOrderReceiver.getMenuItemSchedule();
 

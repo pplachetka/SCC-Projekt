@@ -36,6 +36,7 @@ public class adminEndpoint {
             return Response.status(401).build();
         }
 
+
         new MyDBHandler().insertMenuItem( Description,  Costs);
 
         //ToDo: schauen ob das menuItem tatsächlich abgebildet ist
