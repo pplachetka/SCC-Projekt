@@ -25,11 +25,13 @@ public class authenticationEndpoint {
             //setToken
             token = new BigInteger(130, new SecureRandom()).toString(30);
             new MyDBHandler().setToken(userId,token);
-            userData = new ObjectMapper().writeValueAsString(new MyDBHandler().getUserDataByToken(userId));
+            userData = new ObjectMapper().writeValueAsString(new MyDBHandler().getUserDataByToken(token));
         }else{
             // default response for failed authorization, could be done more ellegantly
             // Todo response with 401 ?
             userData = "{ \"userID\":"+userId +", \"isAdmin\":\"-1\" }";
+            return Response.status(401).entity(userData).build();
+
         }
         return Response.status(200).entity(userData).build();
 
