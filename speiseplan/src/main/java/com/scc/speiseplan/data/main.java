@@ -8,6 +8,7 @@ public class main {
 
     public static void main(String[] args) throws IOException {
 
+        //direct access to DB
         String mysql_url = "jdbc:mysql://localhost:3306/scc";
 
 
@@ -20,14 +21,17 @@ public class main {
         System.out.println(new MyDBHandler(mysql_url).isAdmin("as"));
 
         //LOGIN
-        System.out.println("Test set token");
-        new MyDBHandler(mysql_url).setToken(1, "s");
+        //System.out.println("Test set token");
+        //new MyDBHandler(mysql_url).setToken(1, "s");
 
         // get Userdata
         System.out.println("Test get userdata");
-        String json_user = new ObjectMapper().writeValueAsString(new MyDBHandler(mysql_url).getUserDataByToken(1));
+        String json_user = new ObjectMapper().writeValueAsString(new MyDBHandler(mysql_url).getUserDataByToken("44khbfcj5gkrg0ee5oaj696bope"));
         System.out.println(json_user);
 
+        System.out.println("Test get MenuItemSchedule");
+        String json_schedule = new ObjectMapper().writeValueAsString(new MyDBHandler(mysql_url).getMenuItemSchedule(20190101,20200202));
+        System.out.println(json_schedule);
 
 
         /////// MENUITEMS /////////
