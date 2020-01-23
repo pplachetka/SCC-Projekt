@@ -29,9 +29,14 @@ public class main {
         String json_user = new ObjectMapper().writeValueAsString(new MyDBHandler(mysql_url).getUserDataByToken("44khbfcj5gkrg0ee5oaj696bope"));
         System.out.println(json_user);
 
+        new MyDBHandler(mysql_url).setMenuItemSchedule(20190101,1,1);
+        new MyDBHandler(mysql_url).setMenuItemSchedule(20190101,1,2);
+        new MyDBHandler(mysql_url).setMenuItemSchedule(20190101,2,2);
+        /////// MENUSCHEDULE //////
         System.out.println("Test get MenuItemSchedule");
         String json_schedule = new ObjectMapper().writeValueAsString(new MyDBHandler(mysql_url).getMenuItemSchedule(20190101,20200202));
         System.out.println(json_schedule);
+
 
 
         /////// MENUITEMS /////////
