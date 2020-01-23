@@ -1,12 +1,16 @@
 package com.scc.speiseplan.data;
 
 
+import java.math.BigDecimal;
+
 public class MenuItemSchedule {
 
     private int menuItemScheduleID;
     private int date;
     private int position;
     private int menuItemID;
+    private String description;
+    private BigDecimal costs;
 
     public int getMenuItemScheduleID() {
         return menuItemScheduleID;
@@ -38,6 +42,22 @@ public class MenuItemSchedule {
 
     public void setMenuItemID(int menuItemID) {
         this.menuItemID = menuItemID;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public BigDecimal getCosts() {
+        return costs;
+    }
+
+    public void setCosts(BigDecimal costs) {
+        this.costs = costs;
     }
 
     @Override

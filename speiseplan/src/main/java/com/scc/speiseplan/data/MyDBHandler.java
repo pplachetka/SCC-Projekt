@@ -304,7 +304,10 @@ public class MyDBHandler {
         ArrayList menuItemScheduleList = new ArrayList<MenuItemSchedule>();
         try {
             stmt = con.prepareStatement(
-                    "SELECT menuScheduleID, date, position, menuItemID FROM " + Tbl_MENUITEMSCHEDULE +
+                    "SELECT schedule.menuItemScheduleID, schedule.date, schedule.position, item.menuItemID, item.description, item.costs " +
+                            "FROM " + Tbl_MENUITEMSCHEDULE + " schedule " +
+                            " JOIN " + Tbl_MENUITEM + " item " +
+                            " ON schedule.menuItemID = item.menuItemID " +
                             " WHERE date between ? and ? " );
             stmt.setInt(1,startDate);
             stmt.setInt(2, endDate);
@@ -313,10 +316,12 @@ public class MyDBHandler {
             rs = stmt.executeQuery();
             while (rs.next()) {
                 MenuItemSchedule menuItemSchedule = new MenuItemSchedule();
-                    menuItemSchedule.setMenuItemScheduleID(rs.getInt("menuScheduleID"));
+                    menuItemSchedule.setMenuItemScheduleID(rs.getInt("menuItemScheduleID"));
                     menuItemSchedule.setDate((Integer.valueOf(new SimpleDateFormat("YYYYMMDD").format(rs.getDate("date"))))); //huhhh hacky
                     menuItemSchedule.setPosition(rs.getInt("position"));
                     menuItemSchedule.setMenuItemID(rs.getInt("menuItemID"));
+                    menuItemSchedule.setCosts(rs.getBigDecimal("costs"));
+                    menuItemSchedule.setDescription(rs.getString("description"));
                 menuItemScheduleList.add(menuItemSchedule);
                 System.out.println(menuItemSchedule.toString());
             }
