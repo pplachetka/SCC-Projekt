@@ -49,8 +49,8 @@ public class scheduleEndpoint {
             new MyDBHandler()
                     .setMenuItemSchedule(
                             item.getDate(),
-                            item.getMenuItemID(),
-                            item.getPosition()
+                            item.getPosition(),
+                            item.getMenuItemID()
                     );
         }
         //ToDo: exception handling, inserted?
