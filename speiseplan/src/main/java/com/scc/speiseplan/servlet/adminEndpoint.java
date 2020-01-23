@@ -13,9 +13,9 @@ public class adminEndpoint {
 
     //DONE
     @Path("/getMenuItemList")
-    @POST
+    @GET
     @Produces("application/json")
-    public Response getMenuList(@FormParam("token") String token) throws IOException {
+    public Response getMenuList(@QueryParam("token") String token) throws IOException {
 
         if (! new MyDBHandler().isAdmin(token)){
             return Response.status(401).build();
