@@ -92,7 +92,7 @@ public class scheduleEndpoint {
 
     //ToDO:test
     @Path("/setMenuItemScheduleCustomerOrder")
-    @GET
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response setMenuItemScheduleCustomerOrder (MenuItemScheduleCustomerOrderReceiver MenuItemScheduleCustomerOrderReceiver ){
 
