@@ -317,7 +317,7 @@ public class MyDBHandler {
             while (rs.next()) {
                 MenuItemSchedule menuItemSchedule = new MenuItemSchedule();
                     menuItemSchedule.setMenuItemScheduleID(rs.getInt("menuItemScheduleID"));
-                    menuItemSchedule.setDate((Integer.valueOf(new SimpleDateFormat("YYYYMMDD").format(rs.getDate("date"))))); //huhhh hacky
+                    menuItemSchedule.setDate((Integer.valueOf(new SimpleDateFormat("yyyyMMdd").format(rs.getDate("date"))))); //huhhh hacky
                     menuItemSchedule.setPosition(rs.getInt("position"));
                     menuItemSchedule.setMenuItemID(rs.getInt("menuItemID"));
                     menuItemSchedule.setCosts(rs.getBigDecimal("costs"));
