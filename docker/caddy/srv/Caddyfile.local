@@ -1,6 +1,5 @@
 
-:80 {
-	root www
+speiseplan.ddns.net {
  	proxy / tomcat:8080
 	cors
 	fastcgi / php:9000 php

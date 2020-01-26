@@ -11,8 +11,16 @@ services:
    - "443:443"
   links:
    - tomcat:tomcat
+   - php:php
   environment:
    - CADDYPATH=/srv/caddy_home/
+  networks:
+   - scc
+
+ php:
+  image: php:7.4.2-fpm-buster
+  volumes:
+   - "./www:/srv"
   networks:
    - scc
 
