@@ -8,10 +8,7 @@ services:
   depends_on:
     - mysql
   volumes:
-#   - ./tomcat:/usr/local/tomcat
    - ./webapps:/usr/local/tomcat/webapps
-   - ./certs:/usr/local/tomcat/ssl
-   - ./server.xml:/usr/local/tomcat/conf/server.xml
   links:
    - mysql:mysql
   networks:
@@ -19,7 +16,7 @@ services:
 
  mysql:
   image: mysql:8
-  # has to be closed lateron
+  # opened for direct connection
   ports:
   - 3306:3306
   networks:
