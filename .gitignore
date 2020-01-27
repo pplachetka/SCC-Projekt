@@ -1,3 +1,4 @@
 .idea
 speiseplan/target/
 speiseplan/.idea/
+docker_env/caddy/src/caddy_home/

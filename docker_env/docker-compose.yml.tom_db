@@ -1,0 +1,33 @@
+version: '3'
+services:
+ tomcat:
+  image: tomcat:9.0.5-jre8
+  ports:
+   - "8080:8080"
+   - "8443:8443"
+  depends_on:
+    - mysql
+  volumes:
+#   - ./tomcat:/usr/local/tomcat
+   - ./webapps:/usr/local/tomcat/webapps
+   - ./certs:/usr/local/tomcat/ssl
+   - ./server.xml:/usr/local/tomcat/conf/server.xml
+  links:
+   - mysql:mysql
+  networks:
+   - scc
+
+ mysql:
+  image: mysql:8
+  # has to be closed lateron
+  ports:
+  - 3306:3306
+  networks:
+   - scc
+  env_file:
+   - ./config/mysql_credentials
+  volumes:
+   - "./mysql/db:/var/lib/mysql"
+   - "./mysql/init:/docker-entrypoint-initdb.d"
+networks:
+ scc: 

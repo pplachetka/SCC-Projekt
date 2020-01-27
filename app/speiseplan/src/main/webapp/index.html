@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+/speiseplan/endpoint/authentication/login
+    <form action="/speiseplan/endpoint/authentication/login" method="post">
+        UserId <input type="text" name="userID"><br>
+        password <input type="text" name="password"><br>
+        <input type="submit">
+    </form>
+<br>
+/speiseplan/endpoint/admin/getMenuItemList
+    <form action="/speiseplan/endpoint/admin/getMenuItemList" method="get">
+        token <input type="text" name="token"><br>
+        <input type="submit">
+    </form>
+<br>
+/speiseplan/endpoint/admin/setMenuItem
+    <form action="/speiseplan/endpoint/admin/setMenuItem" method="post">
+        Description  <input type="text" name="description"><br>
+        Costs  <input type="text" name="costs"><br>
+        token <input type="text" name="token"><br>
+        <input type="submit">
+    </form>
+<br>
+
+/speiseplan/endpoint/schedule/setMenuItemSchedule //depricated
+    <form action="/speiseplan/endpoint/schedule/setMenuItemSchedule" method="post">
+        date  <input type="text" name="date"><br>
+        position  <input type="text" name="position"><br>
+        menuItemID  <input type="text" name="menuItemID"><br>
+        <input type="submit">
+    </form>
+
+/speiseplan/endpoint/schedule/getMenuItemSchedule
+    <form action="/speiseplan/endpoint/schedule/getMenuItemSchedule" method="get">
+        startdate  <input type="text" name="startdate"><br>
+        enddate  <input type="text" name="enddate"><br>
+        <input type="submit">
+    </form>
+
+/speiseplan/endpoint/admin/isAdmin
+    <form action="/speiseplan/endpoint/authentication/isAdmin" method="post">
+        token <input type="text" name="token"><br>
+        <input type="submit">
+    </form>
+</body>
+</html>

@@ -1,0 +1,12 @@
+
+speiseplan.ddns.net {
+#	tls /srv/localhost.pem /srv/localhost.key {
+#	protocols tls1.0 tls1.3
+#	}
+#	tls self_signed {
+#	protocols tls1.0 tls1.3
+#	}
+#	tls off
+ 	proxy / tomcat:8080
+	cors
+}

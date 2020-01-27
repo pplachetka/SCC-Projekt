@@ -1,0 +1,4 @@
+#!/bin/bash
+
+sudo docker logs -f $(sudo docker ps | grep tomcat | cut -d' ' -f1)
+
