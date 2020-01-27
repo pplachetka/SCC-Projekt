@@ -26,7 +26,7 @@ echo "########### deploy servlets to application server ###########"
 cp $root/app/speiseplan/target/speiseplan.war $root/docker_env/webapps/
 
 echo "########### starting docker container ###########"
-if [[ ! -z $(docker ps | grep  'tomcat\|mysql\|caddy') ]] 
+if [[ ! -z $( sudo docker ps | grep  'tomcat\|mysql\|caddy') ]] 
     then echo "already running"
     else 
 	if [[ $local_flag -eq 1 ]]
