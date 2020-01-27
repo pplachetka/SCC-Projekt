@@ -1,0 +1,30 @@
+version: '3'
+services:
+ tomcat:
+  image: tomcat:9.0.5-jre8
+  ports:
+   - "8080:8080"
+   - "8443:8443"
+  depends_on:
+    - mysql
+  volumes:
+   - ./webapps:/usr/local/tomcat/webapps
+  links:
+   - mysql:mysql
+  networks:
+   - scc
+
+ mysql:
+  image: mysql:8
+  # opened for direct connection
+  ports:
+  - 3306:3306
+  networks:
+   - scc
+  env_file:
+   - ./config/mysql_credentials
+  volumes:
+   - "./mysql/db:/var/lib/mysql"
+   - "./mysql/init:/docker-entrypoint-initdb.d"
+networks:
+ scc: 
