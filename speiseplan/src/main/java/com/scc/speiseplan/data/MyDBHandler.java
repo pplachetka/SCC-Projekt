@@ -1,6 +1,8 @@
 package com.scc.speiseplan.data;
 
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import java.math.BigDecimal;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -20,6 +22,8 @@ public class MyDBHandler {
     private Connection con;
     private PreparedStatement stmt;
     private ResultSet rs;
+
+
 
    // private String mysql_url="jdbc:mysql://localhost:3306/scc";
     private String mysql_url="jdbc:mysql://mysql/scc";
@@ -87,7 +91,8 @@ public class MyDBHandler {
             System.out.println(stmt);
             rs = stmt.executeQuery();
             while(rs.next()) {
-                if (rs.getString("password").equals(password)) {
+                String md5Hex = DigestUtils.md5Hex(password);
+                if (rs.getString("password").equals(md5Hex)) {
                     System.out.println(rs.getString("password"));
                     returnValue = true;
                 }

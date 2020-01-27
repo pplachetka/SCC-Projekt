@@ -1,10 +1,13 @@
-package com.scc.speiseplan.data;
+package com.scc.speiseplan.testClient;
 
+import com.scc.speiseplan.data.MyDBHandler;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 
-public class main {
+public class DBtest {
 
     public static void main(String[] args) throws IOException {
 
@@ -29,37 +32,30 @@ public class main {
         String json_user = new ObjectMapper().writeValueAsString(new MyDBHandler(mysql_url).getUserDataByToken("44khbfcj5gkrg0ee5oaj696bope"));
         System.out.println(json_user);
 
-        new MyDBHandler(mysql_url).setMenuItemSchedule(20190101,1,1);
-        new MyDBHandler(mysql_url).setMenuItemSchedule(20190101,1,2);
-        new MyDBHandler(mysql_url).setMenuItemSchedule(20190101,2,2);
-        /////// MENUSCHEDULE //////
-        System.out.println("Test get MenuItemSchedule");
-        String json_schedule = new ObjectMapper().writeValueAsString(new MyDBHandler(mysql_url).getMenuItemSchedule(20190101,20200202));
-        System.out.println(json_schedule);
-
-
 
         /////// MENUITEMS /////////
-        // MyDBHandler con_menu = new MyDBHandler();
-        // GET
-      /**  ArrayList<MenuItem> menuItemList = new MyDBHandler(mysql_url).getMenuItemList();
-
-        String json_menulist = "{ \"menuItemList\" :" +new ObjectMapper().writeValueAsString(menuItemList)+"}";
-        System.out.println(json_menulist);
-        //man bekommt hier nur n Array raus, könnte man quick n dirty lösen und einfach damit weiterarbeiten
-       **/
 
         ///// create / update / delete MenuItem /////////
-        /**
-         new MyDBHandler(mysql_url).insertMenuItem("huehnchen",new BigDecimal("3.00"));
+
+        new MyDBHandler(mysql_url).insertMenuItem("huehnchen",new BigDecimal("3.00"));
         new MyDBHandler(mysql_url).insertMenuItem("huehnchen",new BigDecimal("3.00"));
         new MyDBHandler(mysql_url).deleteMenuItem(4);
         new MyDBHandler(mysql_url).updateMenuItem(5,"kein hühnchen", new BigDecimal("2.00"));
 
-        String json_menulist = "{ \"menuItemList\" :" +new ObjectMapper().writeValueAsString(new MyDBHandler(mysql_url).getMenuItemList())+"}";
-         System.out.println(json_menulist);
+        // GET
+        String json_menulist =new ObjectMapper().writeValueAsString(new MyDBHandler(mysql_url).getMenuItemList());
+        System.out.println(json_menulist);
 
-         **/
+        /////// MENUSCHEDULE //////
+        //// create / update MenuItemSchedule ////
+        new MyDBHandler(mysql_url).setMenuItemSchedule(20190101,1,1);
+        new MyDBHandler(mysql_url).setMenuItemSchedule(20190101,1,2);
+        new MyDBHandler(mysql_url).setMenuItemSchedule(20190101,2,2);
+
+        System.out.println("Test get MenuItemSchedule");
+        String json_schedule = new ObjectMapper().writeValueAsString(new MyDBHandler(mysql_url).getMenuItemSchedule(20190101,20200202));
+        System.out.println(json_schedule);
+
 
         ////// Admin Scheduling  ///////
 
