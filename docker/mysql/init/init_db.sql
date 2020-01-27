@@ -51,7 +51,7 @@ CREATE TABLE scc.CUSTOMER_ORDER(
 
 INSERT INTO USER (Name, FamilyName, Password, isAdmin)
 VALUES
-('admin', 'admin', 'admin', '1'),('user','username', 'userfamily','0');
+('admin', 'admin', MD5('admin'), '1'),('user','username', MD5('user'),'0');
 
 INSERT INTO MENUITEM (Description, Costs)
 VALUES ('Huhn','3.5')
