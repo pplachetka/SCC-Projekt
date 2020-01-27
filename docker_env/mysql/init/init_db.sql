@@ -17,7 +17,7 @@ UserID INT NOT NULL AUTO_INCREMENT
 CREATE TABLE scc.MENUITEM (
     MenuItemID INT NOT NULL AUTO_INCREMENT
     , Description VARCHAR(1000) NOT NULL
-    , Description_short VARCHAR(100) NULL
+    , Description_long VARCHAR(100) NULL
     , Costs numeric(15,2)
     , PRIMARY KEY (MenuItemID)
 );
@@ -54,7 +54,7 @@ INSERT INTO USER (Name, FamilyName, Password, isAdmin)
 VALUES
 ('admin', 'admin', MD5('admin'), '1'),('user','username', MD5('user'),'0');
 
-INSERT INTO MENUITEM (Description_short,Description, Costs)
+INSERT INTO MENUITEM (Description,Description_long, Costs)
 VALUES 
 ('Rindergeschnetzeltes','Rindergeschnetzeltes mit Paprika dazu Apfelrotkohl und Spätzle','2.63')
 ,('Brokkoli-Kichererbsen-Pfanne','Brokkoli-Kichererbsen-Pfanne mit Vollkornbrot ','3.86')
