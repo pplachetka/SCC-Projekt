@@ -67,6 +67,8 @@ public class MenuItemSchedule {
                 ", date=" + date +
                 ", position=" + position +
                 ", menuItemID=" + menuItemID +
+                ", description='" + description + '\'' +
+                ", costs=" + costs +
                 '}';
     }
 }
